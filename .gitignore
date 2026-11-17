@@ -33,3 +33,4 @@ test-results/
 .openai/
 *claim-private*
 *vercel-private*
+.wrangler/

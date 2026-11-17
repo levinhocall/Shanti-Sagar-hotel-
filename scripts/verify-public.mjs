@@ -13,6 +13,7 @@ try {
     const response = await page.goto(url)
     assert.equal(response.status(), 200)
     await page.getByRole('heading', { level: 1 }).waitFor()
+    assert.equal(await page.locator('main').getAttribute('data-design-version'), 'cinematic-v2')
     assert.match(await page.title(), /Shanti Sagar/)
     if (mobile) {
       for (const width of [360, 393, 412]) {
@@ -37,6 +38,8 @@ try {
     if (!mobile) {
       await page.getByRole('button', { name: 'Explore in 3D', exact: true }).click()
       await page.locator('canvas').waitFor({ state: 'visible', timeout: 20000 })
+      await expect.poll(() => page.locator('canvas').evaluate(canvas => { const gl = canvas.getContext('webgl2') || canvas.getContext('webgl'); return !!gl?.getParameter(gl.CURRENT_PROGRAM) })).toBe(true)
+      await expect(page.locator('.sculpture-stage')).toHaveAttribute('data-render-ready', 'true')
       await page.getByRole('button', { name: 'Return to still life' }).click()
     }
     assert.deepEqual(errors, [])

@@ -21,3 +21,8 @@ The sculpture is original procedural geometry. No downloaded 3D model, paid UI
 kit, or proprietary component is used. Three.js, React Three Fiber, Drei, Motion,
 React, Vite, Tailwind, Embla and Lucide are free/open-source packages; package
 license notices remain available in their installed distributions.
+
+
+Cinematic V2 creates local WebP variants of the same licensed photos (480px and
+900px), plus an 1800px hero source from the same Unsplash photo ID. No images
+from the supplied reference video or MotionSites were copied into the project.

@@ -1,3 +1,7 @@
+# Current release: Cinematic V2
+
+See [Cinematic V2 release notes](CINEMATIC-V2.md) for current implementation, checks, audit and Cloudflare release information. The report below records the earlier V1 work.
+
 # Verification — 17 November 2026
 
 Final implementation in `/workspace/shanti-sagar`:

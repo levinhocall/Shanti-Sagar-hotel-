@@ -22,6 +22,7 @@ test('hero, navigation, local images and responsive layout', async ({ page }, in
     await expect(page).toHaveURL(/#menu/)
     await page.goto('/')
   }
+  await page.getByRole('img', { name: /Illustrative vegetarian thali/ }).evaluate((image: HTMLImageElement) => image.decode())
   await page.screenshot({ path: `docs/preview-${info.project.name}.png` })
 })
 test('category filter, immersive details, tabs, browser Back, scroll and focus restoration', async ({ page }) => {
@@ -96,7 +97,11 @@ test('3D is opt-in, loads on demand and can return to still life', async ({ page
   await page.getByRole('button', { name: 'Explore in 3D', exact: true }).click()
   await expect(page.locator('canvas')).toBeVisible({ timeout: 20000 })
   expect(await page.locator('canvas').evaluate((canvas: HTMLCanvasElement) => !!(canvas.getContext('webgl2') || canvas.getContext('webgl')))).toBe(true)
+  await expect.poll(() => page.locator('canvas').evaluate((canvas: HTMLCanvasElement) => { const gl = canvas.getContext('webgl2') || canvas.getContext('webgl'); return !!gl?.getParameter(gl.CURRENT_PROGRAM) })).toBe(true)
+  await expect(page.locator('.sculpture-stage')).toHaveAttribute('data-render-ready', 'true')
   await page.screenshot({ path: 'docs/preview-3d.png' })
   await page.getByRole('button', { name: 'Return to still life' }).click()
   await expect(page.locator('canvas')).toHaveCount(0)
+  await page.getByRole('button', { name: 'Explore in 3D', exact: true }).click()
+  await expect(page.locator('.sculpture-stage')).toHaveAttribute('data-render-ready', 'true')
 })

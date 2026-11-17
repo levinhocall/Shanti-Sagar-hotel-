@@ -1,4 +1,9 @@
-# Shanti Sagar Pure Veg — original interactive website concept
+# Shanti Sagar Pure Veg — Cinematic V2
+
+Current deployment: https://shanti-sagar-hotel.meetatiwari47.workers.dev
+
+See [Cinematic V2 release notes](docs/CINEMATIC-V2.md) for the original redesign,
+responsive/animation verification, 3D chunk analysis and dependency audit.
 
 An unofficial restaurant demonstration built on the existing React + TypeScript
 + Vite project. All design and interactive components are original. The
@@ -91,7 +96,28 @@ See `docs/VERIFICATION.md` for actual results and limitations. Contact actions
 stay disabled during tests; the external map is stubbed to avoid reliance on a
 third-party service. Screenshots are in `docs/preview-*.png`.
 
-## Deploy on Vercel and obtain a public URL
+## Deploy to the existing Cloudflare Worker
+
+The user confirmed GitHub automatic deployment is connected to this repository.
+Keep the Worker name `shanti-sagar-hotel` and the existing account/domain.
+`wrangler.jsonc` serves the production `dist/` directory with SPA fallback.
+
+```sh
+npm ci
+npm run typecheck
+npm run lint
+npm run build
+npm run check:worker
+npm run test:production
+```
+
+Push the verified commit to the connected branch to trigger the existing
+Cloudflare build. Build command: `npm run build`. Deployment command:
+`npm run deploy` (or `npx wrangler deploy`). For a manual authorized deployment,
+run `npm run deploy` only after building and authenticating Wrangler to the
+existing account. No account identifiers or credentials are committed.
+
+## Alternative Vercel deployment (existing compatibility retained)
 
 **Android: use [the phone deployment guide](docs/ANDROID-DEPLOYMENT.md).**
 Vercel Drop accepts either supplied ZIP directly, without GitHub or a terminal.
