@@ -1,7 +1,16 @@
 {
-  "url": "https://sonic-teal-jutbrm0.tmp.now",
-  "status": "READY",
-  "temporary": true,
-  "expiresAt": "2026-11-17 16:23:29 UTC",
-  "deploymentId": "dpl_6Ex568ndSWEoKLEqNYZtFfpYmC8m"
+  "url": "https://shanti-sagar-hotel.meetatiwari47.workers.dev",
+  "status": "live_verified",
+  "temporary": false,
+  "designVersion": "cinematic-v2",
+  "worker": "shanti-sagar-hotel",
+  "sourceCommit": "6a0023443c2a73c2545fe978c5c4689ae5816ec9",
+  "verifiedAt": "2026-11-17T19:44:33.674769+00:00",
+  "homepageMatchesLocalBuild": true,
+  "productionBrowserSuite": {
+    "passed": 21,
+    "skipped": 1
+  },
+  "liveSmokeTests": "desktop and Android-size Chromium passed",
+  "physicalMobileTested": false
 }

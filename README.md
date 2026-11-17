@@ -11,7 +11,7 @@ incomplete 21st.dev dependency and integration placeholder have been replaced.
 
 ## Start and build
 
-Use Node.js 22.12+ (24 recommended).
+Use Node.js 24 (recommended), or a compatible supported Node.js version for the installed Vite/ESLint tools.
 
 ```sh
 npm ci
@@ -127,9 +127,9 @@ Run `python3 scripts/package-demo.py` after a build to regenerate both archives.
 
 The following Git import method remains available if you prefer it.
 
-This static project requires no runtime secrets. A temporary Vercel preview was
-published during release verification; see `docs/PUBLIC-DEPLOYMENT.json` for the
-actual URL and expiry. It must be claimed before expiry to remain live.
+This static project requires no runtime secrets. The current verified release
+is on Cloudflare; see `docs/PUBLIC-DEPLOYMENT.json`. Vercel configuration remains
+available as an alternative and does not replace the existing Cloudflare URL.
 
 1. Push this project directory and `package-lock.json` to your Git repository.
 2. In Vercel, choose **Add New → Project → Import Git Repository**.

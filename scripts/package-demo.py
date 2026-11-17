@@ -6,7 +6,7 @@ import re
 
 root = Path(__file__).resolve().parents[1]
 output = root.parent
-excluded = {'node_modules', 'dist', '.git', '.vercel', '.openai', 'test-results', 'playwright-report', '__pycache__'}
+excluded = {'node_modules', 'dist', '.git', '.vercel', '.openai', '.wrangler', 'test-results', 'playwright-report', '__pycache__'}
 with ZipFile(output / 'shanti-sagar-source.zip', 'w', ZIP_DEFLATED) as archive:
     for file in sorted(root.rglob('*')):
         relative = file.relative_to(root)

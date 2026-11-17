@@ -108,3 +108,25 @@ The final 3D refinement was rechecked separately after the full suite: it waits
 for an actual rendered scene (not only canvas creation), displays a loading
 state until ready, and verifies repeated enable/disable cycles. This targeted
 production test passed. Context-loss handlers are removed during unmount.
+
+Release commit `6a00234` was pushed to `main`. GitHub reports the existing
+`Workers Builds: shanti-sagar-hotel` check in progress for that exact commit,
+confirming that the release is using the connected Cloudflare Worker workflow.
+
+
+## Published release — verified
+
+The existing Cloudflare URL is serving Cinematic V2:
+https://shanti-sagar-hotel.meetatiwari47.workers.dev
+
+The public response is HTTP 200 and its homepage HTML byte hash matches the
+final local production build. Public desktop and Android-size Chromium smoke
+checks passed: dish opening, on-screen Back, restored focus, gallery navigation,
+mobile navigation, 360/393/412px layout checks and desktop rendered 3D readiness.
+The published JavaScript also carries the `cinematic-v2` marker. The application
+release commit is `6a00234`. No replacement Worker or hostname was created.
+
+See `PUBLIC-DEPLOYMENT.json` and `PUBLIC-SMOKE-TEST.json` for the actual public
+verification record. Physical Android/iOS, Safari engine and Core Web Vitals
+measurements were not performed. The unresolved development-tool-only advisory
+is documented above; the runtime dependency audit is clean.
