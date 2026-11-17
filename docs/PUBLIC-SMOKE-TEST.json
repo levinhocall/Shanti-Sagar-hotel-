@@ -1,0 +1,30 @@
+{
+  "url": "https://sonic-teal-jutbrm0.tmp.now",
+  "checkedAt": "2026-11-17T15:29:12.198Z",
+  "results": [
+    {
+      "device": "Desktop Chromium + software WebGL",
+      "result": "passed",
+      "checks": [
+        "public HTTP 200",
+        "dish opens",
+        "on-screen Back closes",
+        "focus returns",
+        "gallery advances",
+        "3D loads"
+      ]
+    },
+    {
+      "device": "Android-size Chromium, 360/393/412px",
+      "result": "passed",
+      "checks": [
+        "public HTTP 200",
+        "dish opens",
+        "on-screen Back closes",
+        "focus returns",
+        "gallery advances",
+        "mobile menu and widths"
+      ]
+    }
+  ]
+}
