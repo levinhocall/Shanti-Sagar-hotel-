@@ -11,6 +11,7 @@ import { ReviewsAndRatings } from './components/ReviewsAndRatings';
 import { LocationAndContact } from './components/LocationAndContact';
 import { Footer } from './components/Footer';
 import { ExplorerDialog } from './components/ExplorerDialog';
+import { InteractiveMascot } from './components/mascot/InteractiveMascot';
 import { useExplorer } from './hooks/use-explorer';
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
           <LocationAndContact />
         </main>
         <Footer />
+        <InteractiveMascot />
         <ExplorerDialog panel={explorer.panel} onClose={explorer.close} onChange={explorer.change} onExit={explorer.restore} />
       </LayoutGroup>
     </MotionConfig>

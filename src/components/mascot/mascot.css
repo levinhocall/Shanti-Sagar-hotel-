@@ -1,0 +1,76 @@
+/* The reserved slots keep the artwork clear of the hero CTAs and mobile navigation. */
+.hero-mascot-slot {
+  position: absolute;
+  z-index: 2;
+  width: clamp(150px, 18vw, 250px);
+  aspect-ratio: 1;
+  inset: auto max(2%, calc((100vw - 1330px) / 2)) clamp(35px, 7vh, 76px) auto;
+}
+.header-mascot-slot { display: none; }
+.mascot {
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border: 0;
+  padding: 0;
+  border-radius: 46%;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.mascot:focus-visible { outline: 2px solid #ebc580; outline-offset: 1px; }
+.mascot--hero::before {
+  content: '';
+  position: absolute;
+  inset: 12% 6% 4%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #e0aa6042, #17281a64 60%, transparent 72%);
+  pointer-events: none;
+}
+.mascot-gaze, .mascot-breath, .mascot-body, .mascot-eye-rig, .mascot-image, .mascot-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.mascot-body { transform-origin: 50% 91%; }
+.mascot-breath { transform-origin: 50% 88%; }
+.mascot[data-animated="true"] .mascot-breath { animation: mascot-breath 4.6s ease-in-out infinite; }
+@keyframes mascot-breath { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-1.4%) scale(1.014); } }
+.mascot-image { object-fit: contain; }
+.mascot-image[hidden] { display: none; }
+.mascot-fallback { display: grid; place-items: center; color: #edcd8c; }
+.mascot-fallback svg { width: 27%; height: 27%; padding: 4%; box-sizing: content-box; border: 1px solid #e9c6878c; background: #14231be8; border-radius: 50%; }
+.mascot[data-mascot-status="ready"] .mascot-fallback { visibility: hidden; }
+.mascot--hero .mascot-image { filter: drop-shadow(0 8px 13px #08170dbb); }
+.mascot--dock {
+  z-index: 9;
+  position: fixed;
+  right: max(14px, calc((100vw - 1420px) / 2));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  width: 82px;
+  height: 82px;
+  border: 1px solid #c3a16c99;
+  background: radial-gradient(circle at 50% 20%, #41523c, #15251b 78%);
+  box-shadow: 0 8px 22px #09120e50;
+}
+body:has(dialog[open]) .mascot--dock { visibility: hidden; }
+body:has(dialog[open]) .mascot-breath { animation-play-state: paused; }
+
+@media (max-width: 999px) {
+  .header-mascot-slot { display: block; flex: 0 0 46px; height: 46px; margin-left: auto; margin-right: -12px; }
+  .mascot--header { border: 1px solid #d2ab682e; background: #25382b; }
+  .mascot--header .mascot-gaze { clip-path: inset(0 round 42%); }
+  .site-header:has(.header-mascot-slot) .mobile-toggle { flex-shrink: 0; }
+}
+@media (max-width: 700px) {
+  .hero-mascot-slot { width: clamp(76px, 24vw, 118px); top: clamp(15px, 6vh, 65px); right: 14px; bottom: auto; }
+  .header-mascot-slot { margin-right: 0; }
+  .site-header:has(.header-mascot-slot) { gap: clamp(6px, 2.5vw, 12px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mascot[data-animated] .mascot-breath { animation: none; }
+}
