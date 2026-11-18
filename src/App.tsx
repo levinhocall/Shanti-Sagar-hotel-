@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigation } from './components/Navigation';
 import { CinematicHero } from './components/CinematicHero';
 import { RestaurantStory } from './components/RestaurantStory';
@@ -11,6 +11,26 @@ import { LocationAndContact } from './components/LocationAndContact';
 import { Footer } from './components/Footer';
 
 export const App: React.FC = () => {
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('scene-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    sections.forEach((section) => {
+      if (section.getBoundingClientRect().top < window.innerHeight * 0.9) return;
+      section.classList.add('scene-reveal');
+      observer.observe(section);
+    });
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#080D0B] text-[#FFF7E8] font-sans selection:bg-[#D6B56E] selection:text-[#080D0B]">
       {/* Sticky Glass Navigation */}
