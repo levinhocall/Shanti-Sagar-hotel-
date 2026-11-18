@@ -72,21 +72,21 @@ export const Navigation: React.FC<NavigationProps> = ({ onReserveClick }) => {
             : 'py-6 bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-3 min-w-0">
           {/* Brand Logo & Tagline */}
           <a
             href="#home"
-            className="flex items-center gap-3.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D6B56E]"
+            className="flex items-center gap-2 sm:gap-3.5 min-w-0 flex-shrink group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D6B56E]"
             aria-label="Shanti Sagar Pure Veg Home"
           >
-            <div className="w-10 h-10 rounded-full border border-[#D6B56E]/40 bg-[#103D32]/50 flex items-center justify-center text-[#D6B56E] group-hover:scale-105 transition-transform duration-300">
+            <div className="w-10 h-10 shrink-0 rounded-full border border-[#D6B56E]/40 bg-[#103D32]/50 flex items-center justify-center text-[#D6B56E] group-hover:scale-105 transition-transform duration-300">
               <UtensilsCrossed size={18} />
             </div>
-            <div className="flex flex-col">
-              <span className="font-editorial text-xl sm:text-2xl font-bold tracking-wider text-[#FFF7E8] group-hover:text-[#D6B56E] transition-colors">
+            <div className="flex flex-col min-w-0">
+              <span className="font-editorial text-base sm:text-2xl font-bold tracking-tight sm:tracking-wider whitespace-nowrap text-[#FFF7E8] group-hover:text-[#D6B56E] transition-colors">
                 SHANTI SAGAR
               </span>
-              <span className="text-[10px] tracking-[0.22em] text-[#D6B56E] uppercase font-sans font-medium">
+              <span className="text-[9px] sm:text-[10px] tracking-[0.08em] sm:tracking-[0.22em] text-[#D6B56E] uppercase font-sans font-medium">
                 PURE VEG · ULHASNAGAR
               </span>
             </div>
@@ -114,7 +114,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onReserveClick }) => {
           </nav>
 
           {/* Action CTAs & Mobile Toggle */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <a
               href="#menu"
               onClick={(e) => {
@@ -131,7 +131,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onReserveClick }) => {
             {/* Mobile Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-full border border-[#D6B56E]/30 bg-[#103D32]/40 text-[#FFF7E8] hover:text-[#D6B56E] transition-colors focus:outline-none focus:ring-2 focus:ring-[#D6B56E]"
+              className="lg:hidden min-w-11 min-h-11 p-2.5 rounded-full border border-[#D6B56E]/30 bg-[#103D32]/40 text-[#FFF7E8] hover:text-[#D6B56E] transition-colors focus:outline-none focus:ring-2 focus:ring-[#D6B56E]"
               aria-label={mobileMenuOpen ? 'Close Menu' : 'Open Navigation Menu'}
               aria-expanded={mobileMenuOpen}
             >
