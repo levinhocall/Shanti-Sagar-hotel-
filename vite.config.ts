@@ -30,7 +30,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('/node_modules/three/')) return 'three-renderer';
+          if (id.endsWith('/three/build/three.core.js')) return 'three-core';
+          if (id.endsWith('/three/build/three.module.js')) return 'three-renderer';
         },
       },
     },

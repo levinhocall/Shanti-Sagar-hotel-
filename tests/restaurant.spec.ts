@@ -28,12 +28,27 @@ test('hero, navigation, local images and responsive layout', async ({ page }, in
 })
 test('category filter, immersive details, tabs, browser Back, scroll and focus restoration', async ({ page }) => {
   await page.getByRole('link', { name: 'Explore Menu', exact: true }).click()
+  await expect(page).toHaveURL(/#menu$/)
+  // Wait for native smooth scrolling to finish before clicking a moving target.
+  await expect.poll(() => page.locator('#menu').evaluate(section => {
+    const padding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)
+    return Math.abs(section.getBoundingClientRect().top - padding)
+  })).toBeLessThan(3)
   await page.getByRole('button', { name: 'North Indian', exact: true }).click()
   await expect(page.locator('.dish')).toHaveCount(1)
   const card = page.getByRole('button', { name: /Paneer curry/i })
   await card.scrollIntoViewIfNeeded()
-  const scroll = await page.evaluate(() => scrollY)
+  // Playwright may scroll again while waiting for the filtered card to settle.
+  // Record the position at the click, which is the point the explorer restores.
+  await card.evaluate(element => {
+    element.addEventListener('click', () => {
+      element.setAttribute('data-test-scroll', String(window.scrollY))
+    }, { capture: true, once: true })
+  })
   await card.click()
+  const scrollAtClick = await page.locator('.dish').getAttribute('data-test-scroll')
+  expect(scrollAtClick).not.toBeNull()
+  const scroll = Number(scrollAtClick)
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
   await expect(page).toHaveURL(/dish=paneer-curry/)
@@ -48,7 +63,7 @@ test('category filter, immersive details, tabs, browser Back, scroll and focus r
   await page.getByRole('button', { name: 'Back to the table' }).click()
   await expect(dialog).toBeHidden()
   await expect(card).toBeFocused()
-  expect(Math.abs(await page.evaluate(() => scrollY) - scroll)).toBeLessThan(10)
+  await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - scroll)).toBeLessThan(10)
   await page.goForward()
   await expect(dialog).toBeVisible()
   await page.keyboard.press('Escape')

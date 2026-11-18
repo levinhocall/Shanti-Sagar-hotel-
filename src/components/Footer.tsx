@@ -9,6 +9,7 @@ export function Footer() {
           <nav aria-label="Footer navigation"><a href="#menu">Sample menu</a><a href="#gallery">Gallery</a><a href="#location">Visit & contact</a></nav>
           <a className="text-link" href="#home">Back to top <ArrowUp size={18} aria-hidden /></a>
         </div>
+        <p className="footer-title" aria-hidden>Shanti Sagar</p>
         <p className="footer-note">Independent website concept. Sample dishes, AI concept imagery and stock photos are illustrative. Contact details link to public listings.</p>
       </div>
     </footer>

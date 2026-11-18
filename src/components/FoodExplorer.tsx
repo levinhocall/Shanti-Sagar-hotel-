@@ -31,7 +31,10 @@ export function FoodExplorer({ open }: Props) {
                 aria-describedby="sample-menu-note" onClick={event => open({ kind: 'dish', id: dish.id }, event.currentTarget)}>
                 <motion.div className="dish-image" layoutId={!reduced ? `dish-image-${dish.id}` : undefined}
                   transition={{ type: 'spring', stiffness: 240, damping: 31 }}>
-                  <FoodImage src={dish.image.replace('.webp', '-480.webp')} alt="" loading="lazy" decoding="async" />
+                  <FoodImage src={dish.image.replace('.webp', '-480.webp')}
+                    srcSet={`${dish.image.replace('.webp', '-480.webp')} 480w, ${dish.image} ${dish.id === 'paneer-curry' ? 600 : 900}w`}
+                    sizes="(max-width: 700px) 65vw, (max-width: 1200px) 45vw, 620px"
+                    alt="" loading="lazy" decoding="async" />
                 </motion.div>
                 <div className="dish-label"><div><span>{dish.category}</span><h3>{dish.name}</h3></div><ArrowUpRight size={24} aria-hidden /></div>
               </motion.button>
