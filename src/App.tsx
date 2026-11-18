@@ -9,6 +9,7 @@ import { GalleryLightbox } from './components/GalleryLightbox';
 import { ReviewsAndRatings } from './components/ReviewsAndRatings';
 import { LocationAndContact } from './components/LocationAndContact';
 import { Footer } from './components/Footer';
+import { ScrollProgress } from './components/ScrollProgress';
 
 export const App: React.FC = () => {
   useEffect(() => {
@@ -33,6 +34,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#080D0B] text-[#FFF7E8] font-sans selection:bg-[#D6B56E] selection:text-[#080D0B]">
+      <ScrollProgress />
       {/* Sticky Glass Navigation */}
       <Navigation />
 
