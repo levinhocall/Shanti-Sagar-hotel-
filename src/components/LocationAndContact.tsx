@@ -13,7 +13,7 @@ export function LocationAndContact() {
             <h3>{RESTAURANT_INFO.name}</h3>
             <address>{RESTAURANT_INFO.address}</address>
             <div className="visit-actions" data-mascot-reaction="approval">
-              <a className="button button-primary" href={DIRECTIONS} target="_blank" rel="noreferrer"><NavigationArrow size={19} aria-hidden /> Get directions</a>
+              <a className="button button-primary" href={DIRECTIONS} data-puppet-target="visit" target="_blank" rel="noreferrer"><NavigationArrow size={19} aria-hidden /> Get directions</a>
               <a className="button" href={`tel:${RESTAURANT_INFO.phone}`}><Phone size={18} aria-hidden /> Call {RESTAURANT_INFO.phoneLabel}</a>
             </div>
             <div className="listing-links" data-mascot-reaction="approval">
