@@ -28,6 +28,12 @@ test('hero, navigation, local images and responsive layout', async ({ page }, in
 })
 test('category filter, immersive details, tabs, browser Back, scroll and focus restoration', async ({ page }) => {
   await page.getByRole('link', { name: 'Explore Menu', exact: true }).click()
+  await expect(page).toHaveURL(/#menu$/)
+  // Wait for native smooth scrolling to finish before clicking a moving target.
+  await expect.poll(() => page.locator('#menu').evaluate(section => {
+    const padding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)
+    return Math.abs(section.getBoundingClientRect().top - padding)
+  })).toBeLessThan(3)
   await page.getByRole('button', { name: 'North Indian', exact: true }).click()
   await expect(page.locator('.dish')).toHaveCount(1)
   const card = page.getByRole('button', { name: /Paneer curry/i })
