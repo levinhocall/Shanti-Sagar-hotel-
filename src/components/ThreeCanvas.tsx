@@ -292,8 +292,8 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className, onLoaded })
   return (
     <div
       ref={containerRef}
-      className={`relative cursor-grab active:cursor-grabbing select-none touch-none ${className || ''}`}
-      style={{ minHeight: '380px' }}
+      className={`relative cursor-grab active:cursor-grabbing select-none touch-pan-y ${className || ''}`}
+      style={{ minHeight: 'min(78vw, 380px)' }}
       aria-label="Interactive 3D Table Centerpiece - Drag to rotate"
     >
       {/* Interaction Hint */}
