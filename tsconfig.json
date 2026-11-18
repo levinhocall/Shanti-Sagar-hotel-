@@ -15,7 +15,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["react", "react-dom", "three"]
+    "types": ["react", "react-dom", "three"],
+    "paths": { "@/*": ["./*"] }
   },
-  "include": ["src"]
+  "include": ["src", "components", "lib"]
 }

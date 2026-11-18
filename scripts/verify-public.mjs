@@ -5,7 +5,7 @@ if (!url || !url.startsWith('https://')) throw new Error('Pass the actual public
 if (!/^[a-f0-9]{40}$/.test(expectedCommit ?? '')) throw new Error('Pass the full expected git commit SHA')
 const marker = await globalThis.fetch(new URL('/release.json', url), { cache: 'no-store' })
 assert.equal(marker.status, 200)
-assert.deepEqual(await marker.json(), { commit: expectedCommit, design: 'cinematic-v3' })
+assert.deepEqual(await marker.json(), { commit: expectedCommit, design: 'cinematic-v4' })
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] })
 const results = []
 try {
@@ -16,7 +16,7 @@ try {
     const response = await page.goto(url)
     assert.equal(response.status(), 200)
     await page.getByRole('heading', { level: 1 }).waitFor()
-    assert.equal(await page.locator('main').getAttribute('data-design-version'), 'cinematic-v3')
+    assert.equal(await page.locator('main').getAttribute('data-design-version'), 'cinematic-v4')
     assert.match(await page.title(), /Shanti Sagar/)
     if (mobile) {
       for (const width of [360, 393, 412]) {
@@ -26,6 +26,11 @@ try {
       await page.getByRole('button', { name: 'Open navigation' }).click()
       await page.getByRole('navigation', { name: 'Mobile navigation' }).getByRole('link', { name: /Menu/ }).click()
     }
+    const menu = page.getByRole('region', { name: 'What are you craving?' })
+    await menu.getByRole('button', { name: 'Conveyor view' }).click()
+    const conveyor = page.getByRole('region', { name: 'The rolling table' })
+    await expect(conveyor.getByRole('button', { name: 'Paneer curry' })).toBeVisible()
+    await menu.getByRole('button', { name: 'Grid view' }).click()
     const card = page.getByRole('button', { name: /Paneer curry/i })
     await card.click()
     await page.getByRole('dialog').waitFor({ state: 'visible' })
@@ -40,8 +45,8 @@ try {
     await page.getByRole('dialog').waitFor({ state: 'hidden' })
     if (!mobile) {
       await page.getByRole('button', { name: 'Explore in 3D', exact: true }).click()
-      await page.locator('canvas').waitFor({ state: 'visible', timeout: 20000 })
-      await expect.poll(() => page.locator('canvas').evaluate(canvas => { const gl = canvas.getContext('webgl2') || canvas.getContext('webgl'); return !!gl?.getParameter(gl.CURRENT_PROGRAM) })).toBe(true)
+      await page.locator('.scene-host canvas').waitFor({ state: 'visible', timeout: 20000 })
+      await expect.poll(() => page.locator('.scene-host canvas').evaluate(canvas => { const gl = canvas.getContext('webgl2') || canvas.getContext('webgl'); return !!gl?.getParameter(gl.CURRENT_PROGRAM) })).toBe(true)
       await expect(page.locator('.sculpture-stage')).toHaveAttribute('data-render-ready', 'true')
       await page.getByRole('button', { name: 'Return to still life' }).click()
     }

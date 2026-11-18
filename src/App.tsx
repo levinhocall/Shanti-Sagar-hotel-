@@ -3,6 +3,7 @@ import { Navigation } from './components/Navigation';
 import { CinematicHero } from './components/CinematicHero';
 import { RestaurantStory } from './components/RestaurantStory';
 import { TableExperience } from './components/TableExperience';
+import { FoodCinematicScroll } from './components/FoodCinematicScroll';
 import { FoodExplorer } from './components/FoodExplorer';
 import { DiningFacilities } from './components/DiningFacilities';
 import { GalleryLightbox } from './components/GalleryLightbox';
@@ -20,11 +21,12 @@ export default function App() {
         <a className="skip-link" href="#main">Skip to content</a>
         <div className="concept-banner">Unofficial website concept</div>
         <Navigation />
-        <main id="main" tabIndex={-1} data-design-version="cinematic-v3">
+        <main id="main" tabIndex={-1} data-design-version="cinematic-v4">
           <CinematicHero />
+          <FoodCinematicScroll />
           <FoodExplorer open={explorer.open} />
-          <RestaurantStory />
           <TableExperience />
+          <RestaurantStory />
           <DiningFacilities />
           <GalleryLightbox open={explorer.open} />
           <ReviewsAndRatings />

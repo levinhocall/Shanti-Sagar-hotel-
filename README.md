@@ -1,12 +1,12 @@
-# Shanti Sagar Pure Veg · Cinematic V3
+# Shanti Sagar Pure Veg · Cinematic V4
 
 [Existing Cloudflare Worker](https://shanti-sagar-hotel.meetatiwari47.workers.dev)
 
 This independent restaurant concept extends the React, TypeScript, Vite and
 Tailwind project on main. The food explorer, gallery, still life and visit
 sections are usable without WebGL. The optional 3D thali uses React Three Fiber
-and renders on demand. Motion handles card filtering, the shared dish image,
-the scroll reveal and pan feedback. Pinned desktop story imagery uses CSS
+and renders on demand using concept food textures. Motion handles card filtering, the shared dish image,
+the scroll reveal and pan feedback. The paneer study streams nearby frames from a 16-frame WebP sequence. The thali and dosa studies use scroll-linked stills. Pinned desktop story imagery uses CSS
 sticky positioning and the page uses native scrolling.
 
 ## Build and verify
@@ -43,7 +43,7 @@ The map uses a Google Maps search and requests an embed only when activated.
 External listing links handle reviews and ordering. The demo does not process
 orders or collect contact details.
 
-The hero and sample dosa use AI concept images. The stock food photography is illustrative,
+The hero, featured food stories and selected explorer and gallery images use AI concept images. See the [V4 asset manifest and shot specifications](docs/v4-food-assets.md). The stock food photography is illustrative,
 and the sample menu makes no official price, ingredient or allergen claims.
 See [asset credits](docs/ASSET-LICENSES.md). Replace sample food content with
 restaurant-approved material before presenting this as the official site.

@@ -3,7 +3,7 @@ import { ArrowUpRight, Plant } from '@phosphor-icons/react';
 import { motion, useReducedMotion } from 'motion/react';
 
 const links = [
-  ['Menu', 'menu'], ['Our story', 'story'], ['3D table', 'experience'],
+  ['Food stories', 'food-stories'], ['Menu', 'menu'], ['3D table', 'experience'], ['Our story', 'story'],
   ['Gallery', 'gallery'], ['Reviews', 'reviews'], ['Visit', 'location'],
 ];
 

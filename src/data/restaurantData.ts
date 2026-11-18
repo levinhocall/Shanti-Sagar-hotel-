@@ -27,7 +27,8 @@ export const MENU_ITEMS: DishItem[] = [
     image: '/images/masala-dosa-concept.webp',
     subtitle: 'Golden crispness with spiced potato warmth.',
     description: 'Thin, crispy crepe roasted on a hot flat-top seasoned cast iron tawa until bronzed and crisp, wrapped around gently spiced turmeric potato masala, served with aromatic piping hot sambar.',
-    gallery: ['/images/masala-dosa-concept.webp', '/images/feast.webp'],
+    conceptVisual: { card: '/images/v4/dosa-600.webp', large: '/images/v4/dosa-960.webp', alt: 'Golden dosa with three accompaniments' },
+    gallery: ['/images/v4/dosa-960.webp', '/images/masala-dosa-concept.webp', '/images/feast.webp'],
   },
   {
     id: 'paneer-curry',
@@ -36,7 +37,8 @@ export const MENU_ITEMS: DishItem[] = [
     image: '/images/paneer.webp',
     subtitle: 'Rich colour. Quiet indulgence.',
     description: 'Tender cottage cheese cubes simmered in a luscious tomato and cashew silk gravy, infused with roasted kasuri methi and fragrant whole spices. A celebrated staple of North Indian vegetarian dining.',
-    gallery: ['/images/paneer.webp', '/images/feast.webp'],
+    conceptVisual: { card: '/images/v4/paneer-card.webp', large: '/images/v4/paneer-960.webp', alt: 'Paneer curry in hammered copper with naan' },
+    gallery: ['/images/v4/paneer-960.webp', '/images/paneer.webp', '/images/feast.webp'],
   },
   {
     id: 'vegetable-biryani',
@@ -54,7 +56,8 @@ export const MENU_ITEMS: DishItem[] = [
     image: '/images/feast.webp',
     subtitle: 'The full spectrum of pure vegetarian abundance.',
     description: 'A curated multi-course culinary journey across regional vegetarian traditions: seasonal curries, dal tadka, hot rotis, fragrant rice, crisp papad, raita, and handcrafted sweet concluding bite.',
-    gallery: ['/images/feast.webp', '/images/paneer.webp', '/images/dosa.webp'],
+    conceptVisual: { card: '/images/v4/thali-600.webp', large: '/images/v4/thali-960.webp', alt: 'Brass thali with rice and bowls of colourful accompaniments' },
+    gallery: ['/images/v4/thali-960.webp', '/images/feast.webp', '/images/paneer.webp', '/images/dosa.webp'],
   }
 ];
 
@@ -86,7 +89,16 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     title: 'A bowl of biryani',
     credit: 'Unsplash photo-1642821373181-696a54913e93',
     caption: 'Long fragrant grains of basmati infused with caramelized aromatics and warm spices.'
-  }
+  },
+  {
+    id: 'north-indian-feast',
+    src: '/images/v4/feast-600.webp',
+    large: '/images/v4/feast-960.webp',
+    title: 'A feast in warm light',
+    credit: 'AI-generated concept imagery',
+    conceptOnly: true,
+    caption: 'A concept image of a North Indian vegetarian spread with bowls of curry, rice and naan.'
+  },
 ];
 
 export const MAP_QUERY = 'Shanti Sagar Pure Veg, Maharishi Complex, Camp Road, Ulhasnagar';

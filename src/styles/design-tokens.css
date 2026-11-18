@@ -90,6 +90,7 @@ p { line-height: 1.65; }
 .menu-section .eyebrow, .visit-section .eyebrow { color: var(--accent-deep); }
 .menu-section .section-heading > p, .visit-section .section-heading > p { color: var(--paper-muted); }
 .filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.menu-view-row { margin-top: 12px; margin-bottom: 12px; }
 .filter-row button { font-size: .875rem; }
 .filter-row button:hover { border-color: var(--accent); }
 .filter-row button[aria-pressed="true"] { background: var(--accent); color: var(--ink); border-color: var(--accent); }
