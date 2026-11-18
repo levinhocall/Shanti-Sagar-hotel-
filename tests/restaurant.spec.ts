@@ -8,13 +8,13 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }) => { expect(errors.get(page)).toEqual([]) })
 
 test('hero, navigation, local images and responsive layout', async ({ page }, info) => {
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Pure Vegetarian.Pure Happiness.')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Pure vegetarian\.\s*Pure happiness\./)
   await page.evaluate(() => document.fonts.ready)
   await expect(page.getByRole('img', { name: /Illustrative vegetarian thali/ })).toBeVisible()
   await expect.poll(() => page.getByRole('img', { name: /Illustrative vegetarian thali/ }).evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
-  expect(await page.evaluate(() => innerWidth)).toBeLessThanOrEqual(info.project.name === 'android' ? 413 : 1440)
-  if (info.project.name === 'android') {
+  expect(await page.evaluate(() => innerWidth)).toBeLessThanOrEqual(info.project.name === 'desktop' ? 1440 : 413)
+  if (info.project.name !== 'desktop') {
     await page.getByRole('button', { name: 'Open navigation' }).click()
     await expect(page.getByRole('navigation', { name: 'Mobile navigation' })).toBeVisible()
     await page.getByRole('navigation', { name: 'Mobile navigation' }).getByRole('link', { name: /Menu/ }).click()
@@ -23,7 +23,7 @@ test('hero, navigation, local images and responsive layout', async ({ page }, in
     await page.goto('/')
   }
   await page.getByRole('img', { name: /Illustrative vegetarian thali/ }).evaluate((image: HTMLImageElement) => image.decode())
-  await page.screenshot({ path: `docs/preview-${info.project.name}.png` })
+  await page.screenshot({ path: `test-results/preview-${info.project.name}.png` })
 })
 test('category filter, immersive details, tabs, browser Back, scroll and focus restoration', async ({ page }) => {
   await page.getByRole('link', { name: 'Explore Menu', exact: true }).click()
@@ -79,8 +79,11 @@ test('gallery supports keyboard, swipe, browser history and Escape', async ({ pa
   await expect(dialog).toBeHidden()
   await expect(page.getByRole('button', { name: 'Open gallery: The art of sharing' })).toBeFocused()
 })
-test('unverified actions are disabled and map loads only on request', async ({ page }) => {
-  for (const name of ['Call · Unverified', 'WhatsApp · Unverified', 'Order online · Unverified', 'Google review link awaiting verification']) await expect(page.getByRole('button', { name, exact: true })).toBeDisabled()
+test('public contact links use verified listings and the map loads on request', async ({ page }) => {
+  await expect(page.getByRole('link', { name: /Call \+91/ })).toHaveAttribute('href', 'tel:+912512527778')
+  await expect(page.getByRole('link', { name: 'Order on Zomato' })).toHaveAttribute('href', /shanti-sagar-pure-veg-ulhasnagar-thane\/order$/)
+  await expect(page.getByRole('link', { name: 'Get directions' })).toHaveAttribute('href', /google.com\/maps\/dir/)
+  await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0)
   await expect(page.locator('iframe')).toHaveCount(0)
   await page.route('https://www.google.com/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>External map test stub</h1>' }))
   await page.getByRole('button', { name: 'Load Google Maps' }).click()
@@ -92,14 +95,19 @@ test('failed images retain a useful accessible fallback', async ({ page }) => {
   await expect(page.getByRole('img', { name: /Illustrative vegetarian thali/ })).toContainText('Image unavailable')
 })
 test('3D is opt-in, loads on demand and can return to still life', async ({ page }, info) => {
-  test.skip(info.project.name === 'android', 'The Android baseline intentionally uses the lightweight still life.')
+  test.skip(info.project.name === 'iphone-webkit', 'Successful rendering is tested in Chromium; WebKit uses a separate fallback smoke test.')
   await expect(page.locator('canvas')).toHaveCount(0)
   await page.getByRole('button', { name: 'Explore in 3D', exact: true }).click()
   await expect(page.locator('canvas')).toBeVisible({ timeout: 20000 })
   expect(await page.locator('canvas').evaluate((canvas: HTMLCanvasElement) => !!(canvas.getContext('webgl2') || canvas.getContext('webgl')))).toBe(true)
   await expect.poll(() => page.locator('canvas').evaluate((canvas: HTMLCanvasElement) => { const gl = canvas.getContext('webgl2') || canvas.getContext('webgl'); return !!gl?.getParameter(gl.CURRENT_PROGRAM) })).toBe(true)
   await expect(page.locator('.sculpture-stage')).toHaveAttribute('data-render-ready', 'true')
-  await page.screenshot({ path: 'docs/preview-3d.png' })
+  await page.getByRole('button', { name: 'Rotate right' }).click()
+  await page.getByRole('button', { name: /Rice/ }).click()
+  await expect(page.getByRole('button', { name: /Rice/ })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByText('A mound of basmati', { exact: false })).toBeVisible()
+  await page.locator('.sculpture-stage').scrollIntoViewIfNeeded()
+  await page.screenshot({ path: `test-results/preview-3d-${info.project.name}.png` })
   await page.getByRole('button', { name: 'Return to still life' }).click()
   await expect(page.locator('canvas')).toHaveCount(0)
   await page.getByRole('button', { name: 'Explore in 3D', exact: true }).click()

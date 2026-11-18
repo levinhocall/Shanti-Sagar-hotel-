@@ -1,9 +1,12 @@
 import { chromium, expect } from '@playwright/test'
 import assert from 'node:assert/strict'
-import fs from 'node:fs/promises'
-const url = process.argv[2]
+const [url, expectedCommit] = process.argv.slice(2)
 if (!url || !url.startsWith('https://')) throw new Error('Pass the actual public HTTPS deployment URL')
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium', args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] })
+if (!/^[a-f0-9]{40}$/.test(expectedCommit ?? '')) throw new Error('Pass the full expected git commit SHA')
+const marker = await fetch(new URL('/release.json', url), { cache: 'no-store' })
+assert.equal(marker.status, 200)
+assert.deepEqual(await marker.json(), { commit: expectedCommit, design: 'cinematic-v3' })
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] })
 const results = []
 try {
   for (const mobile of [false, true]) {
@@ -13,7 +16,7 @@ try {
     const response = await page.goto(url)
     assert.equal(response.status(), 200)
     await page.getByRole('heading', { level: 1 }).waitFor()
-    assert.equal(await page.locator('main').getAttribute('data-design-version'), 'cinematic-v2')
+    assert.equal(await page.locator('main').getAttribute('data-design-version'), 'cinematic-v3')
     assert.match(await page.title(), /Shanti Sagar/)
     if (mobile) {
       for (const width of [360, 393, 412]) {
@@ -46,6 +49,5 @@ try {
     results.push({ device: mobile ? 'Android-size Chromium, 360/393/412px' : 'Desktop Chromium + software WebGL', result: 'passed', checks: ['public HTTP 200', 'dish opens', 'on-screen Back closes', 'focus returns', 'gallery advances', mobile ? 'mobile menu and widths' : '3D loads'] })
     await context.close()
   }
-  await fs.writeFile('docs/PUBLIC-SMOKE-TEST.json', JSON.stringify({ url, checkedAt: new Date().toISOString(), results }, null, 2) + '\n')
-  console.log(JSON.stringify(results, null, 2))
+  console.log(JSON.stringify({ url, commit: expectedCommit, results }, null, 2))
 } finally { await browser.close() }

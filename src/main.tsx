@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import '@fontsource-variable/manrope/wght.css';
 import './styles/tailwind.css';
 import './styles/design-tokens.css';
 

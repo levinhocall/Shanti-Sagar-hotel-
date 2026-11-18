@@ -1,306 +1,131 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
+import { useEffect, useRef, useState } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { motion } from 'motion/react';
+import { Color, Object3D, Vector2 } from 'three';
+import type { InstancedMesh } from 'three';
+import { LIGHTS } from '../data/table';
+import type { Hotspot, LightMode } from '../data/table';
 
-interface ThreeCanvasProps {
-  className?: string;
-  onLoaded?: () => void;
-}
+const bowl = [[0, 0], [.33, 0], [.38, .06], [.43, .16], [.45, .25], [.44, .27], [.415, .25], [.385, .14], [.32, .06], [0, .06]]
+  .map(([x, y]) => new Vector2(x, y));
+const brass = '#cca264';
+const rotation = -Math.PI / 2;
+const bowls = [
+  { id: 'paneer', position: [-.65, 0, -.57], color: '#ac4621' },
+  { id: 'dal', position: [.50, 0, -.63], color: '#c98823' },
+  { id: 'rice', position: [.83, 0, .35], color: '#e7d4a1' },
+] as const;
 
-export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className, onLoaded }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [webGLFailed, setWebGLFailed] = useState(false);
-  const [isInteracting, setIsInteracting] = useState(false);
+type Props = {
+  angle: number; light: LightMode; hotspot: Hotspot;
+  onSelect: (value: Hotspot) => void; onReady: () => void; onFailure: () => void;
+};
+
+function Grains({ kind }: { kind: Hotspot }) {
+  const meshes = useRef<InstancedMesh>(null);
+  const invalidate = useThree(state => state.invalidate);
+  const count = kind === 'rice' ? 112 : kind === 'dal' ? 24 : 12;
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Check WebGL availability
-    try {
-      const testCanvas = document.createElement('canvas');
-      const gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
-      if (!gl) {
-        setWebGLFailed(true);
-        if (onLoaded) onLoaded();
-        return;
-      }
-    } catch {
-      setWebGLFailed(true);
-      if (onLoaded) onLoaded();
-      return;
+    const mesh = meshes.current;
+    if (!mesh) return;
+    const grain = new Object3D();
+    for (let i = 0; i < count; i++) {
+      const angle = i * 2.39996;
+      const radius = .34 * Math.sqrt((i + .5) / count);
+      const y = kind === 'rice' ? .23 + .135 * (1 - radius / .36) : .235;
+      grain.position.set(Math.cos(angle) * radius, y, Math.sin(angle) * radius);
+      grain.rotation.set(i * 1.17, i * 1.42, i * .77);
+      grain.scale.setScalar(.76 + (i % 6) * .065);
+      grain.updateMatrix();
+      mesh.setMatrixAt(i, grain.matrix);
+      mesh.setColorAt(i, new Color(kind === 'rice' ? (i % 9 === 0 ? '#e4ac55' : '#f4e8cc') :
+        kind === 'dal' ? (i % 2 ? '#644118' : '#60703b') : (i % 4 ? '#e2a367' : '#f0c891')));
     }
-
-    let isVisible = true;
-    let animationFrameId: number;
-
-    // Scene, Camera, Renderer
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x080d0b, 0.08);
-
-    const camera = new THREE.PerspectiveCamera(
-      45,
-      container.clientWidth / container.clientHeight,
-      0.1,
-      100
-    );
-    camera.position.set(0, 1.2, 3.8);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: 'high-performance',
-    });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
-    container.appendChild(renderer.domElement);
-
-    // Centerpiece Group
-    const rootGroup = new THREE.Group();
-    scene.add(rootGroup);
-
-    // 1. Royal Brass Platter (Thali Base)
-    const platterGeo = new THREE.CylinderGeometry(1.2, 1.05, 0.08, 48);
-    const platterMat = new THREE.MeshStandardMaterial({
-      color: 0xd6b56e,
-      metalness: 0.85,
-      roughness: 0.28,
-      emissive: 0x1a1205,
-      emissiveIntensity: 0.15,
-    });
-    const platter = new THREE.Mesh(platterGeo, platterMat);
-    platter.position.y = -0.2;
-    rootGroup.add(platter);
-
-    // 2. Decorative Rim Ring
-    const rimGeo = new THREE.TorusGeometry(1.22, 0.035, 16, 64);
-    const rimMat = new THREE.MeshStandardMaterial({
-      color: 0xf0d495,
-      metalness: 0.95,
-      roughness: 0.15,
-    });
-    const rim = new THREE.Mesh(rimGeo, rimMat);
-    rim.rotation.x = Math.PI / 2;
-    rim.position.y = -0.16;
-    rootGroup.add(rim);
-
-    // 3. Floating Spice Particles & Golden Aromatic Orbs
-    const spiceParticles: THREE.Mesh[] = [];
-    const orbColors = [0xf0d495, 0xa66a48, 0x103d32, 0xe28d38];
-
-    for (let i = 0; i < 24; i++) {
-      const angle = (i / 24) * Math.PI * 2;
-      const radius = 0.5 + Math.random() * 0.9;
-      const height = 0.05 + Math.random() * 0.45;
-
-      const size = 0.03 + Math.random() * 0.04;
-      const geo = i % 2 === 0 ? new THREE.OctahedronGeometry(size) : new THREE.DodecahedronGeometry(size);
-      const mat = new THREE.MeshStandardMaterial({
-        color: orbColors[i % orbColors.length],
-        metalness: 0.6,
-        roughness: 0.3,
-        emissive: orbColors[i % orbColors.length],
-        emissiveIntensity: 0.3,
-      });
-
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(
-        Math.cos(angle) * radius,
-        height,
-        Math.sin(angle) * radius
-      );
-      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-      rootGroup.add(mesh);
-      spiceParticles.push(mesh);
-    }
-
-    // 4. Subtle Inner Glow Ring (Vegetarian Harmony Circle)
-    const ringGeo = new THREE.RingGeometry(0.3, 0.33, 48);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0xd6b56e,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.4,
-    });
-    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-    ringMesh.rotation.x = Math.PI / 2;
-    ringMesh.position.y = -0.15;
-    rootGroup.add(ringMesh);
-
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xfff7e8, 0.8);
-    scene.add(ambientLight);
-
-    const mainSpot = new THREE.SpotLight(0xffdca8, 3.5);
-    mainSpot.position.set(2.5, 4.5, 3);
-    mainSpot.angle = Math.PI / 4;
-    mainSpot.penumbra = 0.5;
-    scene.add(mainSpot);
-
-    const fillLight = new THREE.PointLight(0x103d32, 2.5, 10);
-    fillLight.position.set(-3, 2, -1.5);
-    scene.add(fillLight);
-
-    const rimLight = new THREE.PointLight(0xd6b56e, 2, 8);
-    rimLight.position.set(0, -1, -2);
-    scene.add(rimLight);
-
-    // Interaction State
-    let targetRotationY = 0;
-    let targetRotationX = 0.2;
-    let currentRotationY = 0;
-    let currentRotationX = 0.2;
-    let pointerX = 0;
-    let pointerY = 0;
-    let isPointerDown = false;
-    let prevPointerX = 0;
-    let prevPointerY = 0;
-
-    const onPointerDown = (e: PointerEvent) => {
-      isPointerDown = true;
-      prevPointerX = e.clientX;
-      prevPointerY = e.clientY;
-      setIsInteracting(true);
-    };
-
-    const onPointerMove = (e: PointerEvent) => {
-      if (isPointerDown) {
-        const deltaX = e.clientX - prevPointerX;
-        const deltaY = e.clientY - prevPointerY;
-        prevPointerX = e.clientX;
-        prevPointerY = e.clientY;
-
-        targetRotationY += deltaX * 0.008;
-        targetRotationX += deltaY * 0.005;
-        targetRotationX = Math.max(-0.2, Math.min(0.6, targetRotationX));
-      } else {
-        const rect = container.getBoundingClientRect();
-        pointerX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        pointerY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      }
-    };
-
-    const onPointerUp = () => {
-      isPointerDown = false;
-      setIsInteracting(false);
-    };
-
-    container.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-
-    // Resize Observer
-    const handleResize = () => {
-      if (!container) return;
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-    };
-
-    const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(container);
-
-    // Visibility Observer to pause when off-screen
-    const visibilityObserver = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0.05 }
-    );
-    visibilityObserver.observe(container);
-
-    // Animation Loop
-    const clock = new THREE.Clock();
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
-
-      if (!isVisible) return;
-
-      const elapsedTime = clock.getElapsedTime();
-
-      // Continuous gentle auto-spin when idle
-      if (!isPointerDown) {
-        targetRotationY += 0.0025;
-      }
-
-      // Parallax response
-      const parallaxTargetX = targetRotationX + pointerY * 0.12;
-      const parallaxTargetY = targetRotationY + pointerX * 0.18;
-
-      currentRotationX += (parallaxTargetX - currentRotationX) * 0.06;
-      currentRotationY += (parallaxTargetY - currentRotationY) * 0.06;
-
-      rootGroup.rotation.x = currentRotationX;
-      rootGroup.rotation.y = currentRotationY;
-
-      // Gentle floating animation for particles
-      spiceParticles.forEach((particle, idx) => {
-        const speed = 1.2 + (idx % 4) * 0.3;
-        const phase = idx * 0.8;
-        particle.position.y += Math.sin(elapsedTime * speed + phase) * 0.0012;
-        particle.rotation.x += 0.01;
-        particle.rotation.y += 0.015;
-      });
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
-    if (onLoaded) onLoaded();
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      container.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
-      resizeObserver.disconnect();
-      visibilityObserver.disconnect();
-
-      renderer.dispose();
-      platterGeo.dispose();
-      platterMat.dispose();
-      rimGeo.dispose();
-      rimMat.dispose();
-      ringGeo.dispose();
-      ringMat.dispose();
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
-      }
-    };
-  }, [onLoaded]);
-
-  if (webGLFailed) {
-    return (
-      <div className={`relative flex items-center justify-center ${className || ''}`}>
-        <div className="relative w-72 h-72 md:w-96 md:h-96 rounded-full border border-[#D6B56E]/40 p-3 animate-float">
-          <div className="w-full h-full rounded-full overflow-hidden border border-[#D6B56E]/20 shadow-[0_0_60px_rgba(214,181,110,0.25)]">
-            <img
-              src="/images/feast.webp"
-              alt="Shanti Sagar Pure Veg Table Presentation"
-              className="w-full h-full object-cover scale-105"
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    mesh.computeBoundingSphere();
+    invalidate();
+  }, [count, kind, invalidate]);
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative cursor-grab active:cursor-grabbing select-none touch-pan-y ${className || ''}`}
-      style={{ minHeight: 'min(78vw, 380px)' }}
-      aria-label="Interactive 3D Table Centerpiece - Drag to rotate"
-    >
-      {/* Interaction Hint */}
-      <div className={`absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#0E241E]/80 backdrop-blur-md border border-[#D6B56E]/30 text-[#D6B56E] text-xs font-mono tracking-wider flex items-center gap-2 pointer-events-none transition-opacity duration-300 ${isInteracting ? 'opacity-30' : 'opacity-90'}`}>
-        <span className="w-2 h-2 rounded-full bg-[#D6B56E] animate-ping" />
-        DRAG TO EXPLORE 3D
-      </div>
-    </div>
+    <instancedMesh ref={meshes} args={[undefined, undefined, count]}>
+      {kind === 'paneer' ? <boxGeometry args={[.106, .087, .098]} /> :
+        <sphereGeometry args={[1, 7, 5]} onUpdate={geometry => geometry.scale(kind === 'rice' ? .019 : .015, .011, kind === 'rice' ? .055 : .024)} />}
+      <meshStandardMaterial roughness={.69} />
+    </instancedMesh>
   );
-};
+}
+
+function Readiness({ onReady, onFailure }: Pick<Props, 'onReady' | 'onFailure'>) {
+  const gl = useThree(state => state.gl);
+  const sent = useRef(false);
+  const frame = useRef(0);
+  useFrame(() => {
+    if (sent.current) return;
+    sent.current = true;
+    frame.current = requestAnimationFrame(() => {
+      if (gl.getContext().isContextLost()) onFailure();
+      else if (gl.info.render.triangles > 0) onReady();
+      else onFailure();
+    });
+  });
+  useEffect(() => {
+    const lost = (event: Event) => { event.preventDefault(); onFailure(); };
+    gl.domElement.addEventListener('webglcontextlost', lost);
+    return () => {
+      cancelAnimationFrame(frame.current);
+      gl.domElement.removeEventListener('webglcontextlost', lost);
+    };
+  }, [gl, onFailure]);
+  return null;
+}
+
+export default function ThreeCanvas({ angle, light, hotspot, onSelect, onFailure, onReady }: Props) {
+  const [rotationOffset, setRotationOffset] = useState(0);
+  const dragging = useRef(false);
+  const lightStyle = LIGHTS[light];
+
+  return (
+    <motion.div className="scene-interaction" onPanStart={() => { dragging.current = true; }}
+      onPan={(_, info) => setRotationOffset(value => value + info.delta.x * .013)}
+      onPanEnd={() => { requestAnimationFrame(() => { dragging.current = false; }); }}>
+      <Canvas camera={{ position: [0, 3.7, 3.9], fov: 46 }} frameloop="demand" dpr={[1, 1.4]}
+        gl={{ antialias: true, alpha: true, powerPreference: 'low-power' }} fallback={null}
+        aria-label="Interactive 3D vegetarian thali. Drag to rotate or use the rotation buttons.">
+        <hemisphereLight args={[lightStyle.fill, '#3f2419', 1.55]} />
+        <directionalLight position={[2, 5, 3]} color={lightStyle.color} intensity={lightStyle.intensity} />
+        <directionalLight position={[-3, 1, -4]} color="#d3b589" intensity={1.35} />
+        <group rotation={[0, angle + rotationOffset, 0]}>
+          <mesh position={[0, -.14, 0]}><cylinderGeometry args={[1.55, 1.49, .14, 64]} /><meshStandardMaterial color={brass} metalness={.56} roughness={.33} /></mesh>
+          {[1.49, 1.54].map(radius => <mesh key={radius} rotation={[rotation, 0, 0]} position={[0, -.056, 0]}>
+            <torusGeometry args={[radius, .024, 8, 64]} /><meshStandardMaterial color="#e9bc77" metalness={.56} roughness={.29} />
+          </mesh>)}
+          {bowls.map(({ id, position, color }) => (
+            <group position={[...position]} key={id} onClick={event => { event.stopPropagation(); if (!dragging.current) onSelect(id); }}>
+              <mesh><latheGeometry args={[bowl, 40]} /><meshStandardMaterial color={brass} metalness={.55} roughness={.34} /></mesh>
+              <mesh position={[0, .204, 0]} scale={[1, .16, 1]}><sphereGeometry args={[.391, 32, 14]} /><meshStandardMaterial color={color} roughness={.63} /></mesh>
+              <Grains kind={id} />
+              <mesh rotation={[rotation, 0, 0]} position={[0, .268, 0]}>
+                <torusGeometry args={[.446, .015, 7, 40]} />
+                <meshStandardMaterial color={hotspot === id ? '#fff0b2' : '#cca264'} emissive={hotspot === id ? '#916519' : '#000000'} emissiveIntensity={.4} metalness={.4} roughness={.31} />
+              </mesh>
+            </group>
+          ))}
+          {[0, 1, 2].map(i => <mesh key={i} position={[-.62 + i * .082, i * .032, .55]} rotation={[.04, 0, i * .12]} scale={[.54, .056, .38]}>
+            <sphereGeometry args={[1, 30, 12]} /><meshStandardMaterial color={i % 2 ? '#b57940' : '#d9a360'} roughness={.9} />
+          </mesh>)}
+          {Array.from({ length: 14 }, (_, i) => <mesh key={i} position={[-.91 + (i % 5) * .109, .091 + (i % 2) * .012, .38 + Math.floor(i / 5) * .109]}
+            rotation={[0, i, 0]} scale={[.03 + (i % 3) * .012, .008, .018]}>
+            <sphereGeometry args={[1, 8, 5]} /><meshStandardMaterial color={i % 3 === 0 ? '#604224' : '#995d33'} roughness={.92} />
+          </mesh>)}
+          {Array.from({ length: 7 }, (_, i) => <mesh key={i} position={[.09 + Math.cos(i * 1.7) * .13, .015 + i * .003, .81 + Math.sin(i * 1.7) * .14]}
+            rotation={[0, i, 0]} scale={[.13, .024, .052]}>
+            <sphereGeometry args={[1, 12, 6]} /><meshStandardMaterial color={i % 2 ? '#526132' : '#718545'} />
+          </mesh>)}
+        </group>
+        <Readiness onReady={onReady} onFailure={onFailure} />
+      </Canvas>
+    </motion.div>
+  );
+}
