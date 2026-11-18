@@ -51,12 +51,12 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
       <div className="relative z-10 max-w-7xl mx-auto w-full my-auto py-10 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         {/* Left Editorial Copy */}
         <div className="lg:col-span-7 flex flex-col justify-center min-w-0">
-          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#103D32]/50 border border-[#D6B56E]/30 text-[#D6B56E] text-xs font-mono tracking-[0.2em] uppercase mb-6 w-fit">
+          <div className="inline-flex max-w-full items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#103D32]/50 border border-[#D6B56E]/30 text-[#D6B56E] text-xs font-mono tracking-wider uppercase mb-6 w-fit">
             <Sparkles size={13} />
             EXEMPLARY CULINARY EXHIBITION
           </div>
 
-          <h1 className="font-editorial text-[clamp(2.3rem,9vw,6.5rem)] font-bold tracking-tight text-[#FFF7E8] leading-[1.08] mb-6 break-words">
+          <h1 className="font-editorial text-4xl sm:text-6xl xl:text-7xl font-semibold tracking-tight text-[#FFF7E8] leading-[1.08] mb-6 break-words">
             <span className="block line-reveal">
               <span>PURE VEGETARIAN.</span>
             </span>
@@ -94,7 +94,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
           </div>
 
           {/* Tasteful Disclaimer Reminder */}
-          <p className="mt-8 text-[11px] text-[#FFF7E8]/45 font-mono tracking-wider">
+          <p className="mt-8 text-xs text-[#FFF7E8]/65 font-mono tracking-wider">
             {RESTAURANT_INFO.demoDisclaimer}
           </p>
         </div>
@@ -118,7 +118,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
               )}
               <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#080D0B]/70 via-transparent to-transparent" />
               <div className="absolute bottom-5 left-5 right-5 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-xs uppercase tracking-[.18em] text-[#FFF7E8] font-medium">A feast for the senses</span>
+                <span className="text-xs uppercase tracking-wider text-[#FFF7E8] font-medium">A feast for the senses</span>
                 <button type="button" onClick={() => setShowThreeD((value) => !value)} className="relative z-20 rounded-full bg-[#D6B56E] text-[#080D0B] px-4 py-2.5 text-xs font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
                   {showThreeD ? 'VIEW FOOD' : 'EXPLORE 3D'}
                 </button>
