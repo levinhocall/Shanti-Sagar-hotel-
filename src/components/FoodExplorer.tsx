@@ -45,7 +45,7 @@ export function FoodExplorer({ open }: Props) {
         ) : <div className="dish-grid">
           <AnimatePresence initial={false} mode="popLayout">
             {dishes.map(dish => (
-              <motion.button data-mascot-reaction="happy" className="dish" key={dish.id} layout={!reduced}
+              <motion.button data-puppet-target="dish" data-mascot-reaction="happy" className="dish" key={dish.id} layout={!reduced}
                 initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                 whileHover={reduced ? undefined : { y: -4 }} whileTap={reduced ? undefined : { scale: .98 }}
                 aria-describedby="sample-menu-note" onClick={event => open({ kind: 'dish', id: dish.id }, event.currentTarget)}>

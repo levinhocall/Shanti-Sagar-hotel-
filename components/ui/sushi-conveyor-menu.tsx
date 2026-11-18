@@ -352,7 +352,7 @@ export const SushiConveyorMenu = React.forwardRef<HTMLElement, SushiConveyorMenu
         </svg>
         {items.map((item, index) => (
           <button key={item.id} ref={node => { plates.current[index] = node; }} type="button"
-            className="conveyor-plate" data-tier={item.tier ?? 1} data-active={index === active}
+            className="conveyor-plate" data-puppet-target="dish" data-tier={item.tier ?? 1} data-active={index === active}
             aria-label={item.price ? `${item.name}, ${item.price}` : item.name} aria-haspopup="dialog"
             onClick={event => {
               if (ignoreClick.current && event.detail !== 0) { ignoreClick.current = false; return; }
