@@ -7,7 +7,7 @@ import { FoodImage } from './FoodImage';
 
 const Scene = lazy(() => import('./ThreeCanvas'));
 const dishes = [
-  { name: 'Sharing thali', image: '/images/thali-concept-900.webp', alt: 'AI concept image of a vegetarian thali' },
+  { name: 'Sharing thali', image: '/images/v4/thali-960.webp', alt: 'AI concept image of a vegetarian thali' },
   { name: 'Idli', image: '/images/dosa-900.webp', alt: 'Illustrative photo of idli and sambar' },
   { name: 'Paneer', image: '/images/paneer-900.webp', alt: 'Illustrative photo of paneer curry' },
   { name: 'Biryani', image: '/images/biryani-900.webp', alt: 'Illustrative photo of biryani' },
@@ -53,7 +53,7 @@ export function TableExperience() {
         <div className="table-copy">
           <p className="eyebrow">Interactive dining table</p>
           <h2 id="table-heading">A seat at the table.</h2>
-          <p className="section-description">Turn a digital thali and tap a dish to see what goes into a sharing spread.</p>
+          <p className="section-description">Rotate an illustrated thali model or explore the still-life photographs.</p>
           <button className={live ? 'button' : 'button button-primary'} onClick={() => {
             if (live) { setAngle(0); setMode('photo'); } else start();
           }}>
@@ -94,7 +94,7 @@ export function TableExperience() {
               </SceneBoundary>
             </div>}
           </div>
-          <figcaption>{live ? 'Illustrative 3D thali · Drag sideways to turn' : 'Illustrative serving concept'}</figcaption>
+          <figcaption>{live ? 'Illustrative 3D model · Drag sideways to turn' : 'Illustrative serving concept'}</figcaption>
         </figure>
       </div>
     </section>

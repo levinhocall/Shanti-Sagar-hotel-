@@ -29,12 +29,14 @@ function useSwipe(onMove: (step: number) => void) {
   };
 }
 
-function DishDetail({ dish, onClose }: { dish: DishItem; onClose: () => void }) {
+function DishDetail({ dish, onClose, onChange }: { dish: DishItem; onClose: () => void; onChange: (panel: Panel) => void }) {
   const reduced = useReducedMotion();
   const [tab, setTab] = useState(0);
   const [image, setImage] = useState(0);
   const move = (step: number) => setImage(index => nextIndex(index, step, dish.gallery.length));
   const swipe = useSwipe(move);
+  const dishIndex = MENU_ITEMS.indexOf(dish);
+  const adjacentDish = (step: number) => onChange({ kind: 'dish', id: MENU_ITEMS[nextIndex(dishIndex, step, MENU_ITEMS.length)].id });
   const content = [
     dish.description,
     'No ingredient list has been verified for this sample dish. Check the current recipe directly with the restaurant.',
@@ -56,8 +58,8 @@ function DishDetail({ dish, onClose }: { dish: DishItem; onClose: () => void }) 
       <div className="detail-grid">
         <motion.div className="detail-image" layoutId={reduced ? undefined : `dish-image-${dish.id}`}
           transition={{ type: 'spring', stiffness: 240, damping: 31 }} {...swipe}>
-          <FoodImage src={dish.gallery[image]} alt={`${dish.name} visual moodboard, image ${image + 1}. Illustrative food image.`} />
-          {dish.id === 'masala-dosa' && image === 0 && <span className="photo-label">AI concept image</span>}
+          <FoodImage src={dish.gallery[image]} alt={image === 0 && dish.conceptVisual ? dish.conceptVisual.alt : `${dish.name} visual moodboard, image ${image + 1}. Illustrative food image.`} />
+          {(dish.gallery[image].startsWith('/images/v4/') || dish.gallery[image].includes('-concept')) && <span className="photo-label">AI concept image</span>}
           <div className="image-controls">
             <button className="icon-button" aria-label="Previous dish image" onClick={() => move(-1)}><CaretLeft aria-hidden /></button>
             <span aria-live="polite">{image + 1} / {dish.gallery.length}</span>
@@ -66,13 +68,17 @@ function DishDetail({ dish, onClose }: { dish: DishItem; onClose: () => void }) 
         </motion.div>
         <div className="detail-copy">
           <p className="eyebrow">{dish.category} · Sample dish</p>
-          <h2 id="explorer-title">{dish.name}</h2><p>{dish.subtitle}</p>
+          <motion.h2 id="explorer-title" initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>{dish.name}</motion.h2><p>{dish.subtitle}</p>
           <div className="detail-tabs" role="tablist" aria-label="Dish information">
             {tabs.map((label, index) => <button key={label} id={`dish-tab-${index}`} role="tab" aria-selected={tab === index}
               aria-controls="dish-panel" tabIndex={tab === index ? 0 : -1} onClick={() => setTab(index)} onKeyDown={navigateTabs}>{label}</button>)}
           </div>
           <div className="tab-panel" id="dish-panel" role="tabpanel" aria-labelledby={`dish-tab-${tab}`} tabIndex={0}>{content[tab]}</div>
           <p className="detail-note">Sample menu. Confirm current dishes and prices with the restaurant.</p>
+          <div className="detail-dish-nav" aria-label="Browse sample dishes" role="group">
+            <button type="button" className="button" onClick={() => adjacentDish(-1)}><CaretLeft aria-hidden /> Previous dish</button>
+            <button type="button" className="button" onClick={() => adjacentDish(1)}>Next dish <CaretRight aria-hidden /></button>
+          </div>
         </div>
       </div>
     </>
@@ -94,8 +100,8 @@ function GalleryDetail({ id, onClose, onChange }: { id: string; onClose: () => v
     }}>
       <div className="dialog-top"><h2 id="explorer-title">Food photography</h2><button autoFocus className="icon-button" aria-label="Close gallery" onClick={onClose}><X size={22} aria-hidden /></button></div>
       <motion.figure key={id} initial={reduced ? false : { opacity: .45 }} animate={{ opacity: 1 }} transition={{ duration: reduced ? 0 : .25 }}>
-        <FoodImage src={item.src.replace('.webp', '-900.webp')} alt={item.caption} />
-        <figcaption>{item.title} <span>· Illustrative photography</span></figcaption>
+        <FoodImage src={item.large ?? item.src.replace('.webp', '-900.webp')} alt={item.caption} />
+        <figcaption>{item.title} <span>· {item.conceptOnly ? "AI concept image" : "Illustrative photography"}</span></figcaption>
       </motion.figure>
       <div className="gallery-controls">
         <button className="icon-button" aria-label="Previous gallery image" onClick={() => move(-1)}><CaretLeft aria-hidden /></button>
@@ -139,7 +145,7 @@ export function ExplorerDialog({ panel, onClose, onChange, onExit }: DialogProps
       }}>
         {panel && isOpen && <motion.div key="surface" className="dialog-surface" initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : .28 }}>
-          {dish ? <DishDetail key={dish.id} dish={dish} onClose={onClose} /> : <GalleryDetail id={panel.id} onChange={onChange} onClose={onClose} />}
+          {dish ? <DishDetail key={dish.id} dish={dish} onClose={onClose} onChange={onChange} /> : <GalleryDetail id={panel.id} onChange={onChange} onClose={onClose} />}
         </motion.div>}
       </AnimatePresence>
     </dialog>

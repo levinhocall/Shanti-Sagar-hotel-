@@ -17,7 +17,7 @@ export function GalleryLightbox({ open }: { open: (panel: Panel, trigger: HTMLEl
           <motion.button className="gallery-card" key={item.id} aria-label={`Open gallery: ${item.title}`}
             whileTap={reduced ? undefined : { scale: .985 }}
             onClick={event => open({ kind: 'gallery', id: item.id }, event.currentTarget)}>
-            <FoodImage src={item.src.replace('.webp', '-900.webp')} alt="" loading="lazy" decoding="async" />
+            <FoodImage src={item.large ?? item.src.replace('.webp', '-900.webp')} alt="" loading="lazy" decoding="async" />
             <span>{item.title}<ArrowsOut size={20} aria-hidden /></span>
           </motion.button>
         ))}

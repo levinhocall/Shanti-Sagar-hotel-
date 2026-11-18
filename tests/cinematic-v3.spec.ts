@@ -1,9 +1,9 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-test('cinematic V3 stays usable from narrow phones to wide desktops', async ({ page }) => {
+test('cinematic V4 stays usable from narrow phones to wide desktops', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('main')).toHaveAttribute('data-design-version', 'cinematic-v3')
+  await expect(page.locator('main')).toHaveAttribute('data-design-version', 'cinematic-v4')
   for (const width of [320, 360, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 })
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
@@ -17,14 +17,14 @@ test('cinematic V3 stays usable from narrow phones to wide desktops', async ({ p
 
 test('3D JavaScript is absent from initial loading and WebP imagery resolves', async ({ page }) => {
   const threeRequests: string[] = []
-  page.on('request', request => { if (/\/(three-renderer|ThreeCanvas)-/.test(request.url())) threeRequests.push(request.url()) })
+  page.on('request', request => { if (/\/(three-core|three-renderer|ThreeCanvas)-/.test(request.url())) threeRequests.push(request.url()) })
   await page.goto('/')
-  const hero = page.getByRole('img', { name: /Illustrative vegetarian thali/ })
+  const hero = page.getByRole('img', { name: /Illustrative paneer curry/ })
   await expect.poll(() => hero.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
   expect(await hero.evaluate((image: HTMLImageElement) => image.currentSrc)).toMatch(/\.webp$/)
   await page.getByRole('heading', { name: /A seat at the table/ }).scrollIntoViewIfNeeded()
   expect(threeRequests).toEqual([])
-  await expect(page.locator('canvas')).toHaveCount(0)
+  await expect(page.locator('.scene-host canvas')).toHaveCount(0)
 })
 
 test('scroll story completes its reveal and reduced motion shows readable text immediately', async ({ page }) => {
@@ -51,9 +51,10 @@ test('no WebGL keeps the photo and controls usable', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Explore in 3D' }).click()
   await expect(page.getByRole('status')).toContainText('3D is unavailable')
-  await expect(page.locator('canvas')).toHaveCount(0)
+  await expect(page.locator('.scene-host canvas')).toHaveCount(0)
   await page.getByRole('button', { name: 'Paneer', exact: true }).click()
-  await expect(page.getByRole('img', { name: 'Illustrative photo of paneer curry' })).toBeVisible()
+  const table = page.getByRole('region', { name: 'A seat at the table.' })
+  await expect(table.getByRole('img', { name: 'Illustrative photo of paneer curry' })).toBeVisible()
 })
 
 test('homepage and sample dish dialog pass axe WCAG A and AA rules', async ({ page }) => {
@@ -82,4 +83,10 @@ test('mobile navigation supports Escape and all detail controls remain keyboard-
   await page.keyboard.press('Escape')
   await expect(page.getByRole('dialog')).toBeHidden()
   await expect(card).toBeFocused()
+})
+
+test('the mobile hero exposes its primary action in the first screen', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 660 })
+  await page.goto('/')
+  await expect(page.getByRole('link', { name: 'Explore Menu' })).toBeInViewport({ ratio: 1 })
 })

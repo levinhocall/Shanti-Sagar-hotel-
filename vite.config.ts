@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
@@ -14,6 +15,7 @@ function buildCommit() {
 }
 
 export default defineConfig({
+  resolve: { alias: { '@': fileURLToPath(new URL('.', import.meta.url)) } },
   plugins: [
     react(),
     tailwindcss(),
@@ -21,7 +23,7 @@ export default defineConfig({
       name: 'release-revision',
       apply: 'build',
       generateBundle() {
-        this.emitFile({ type: 'asset', fileName: 'release.json', source: JSON.stringify({ commit: buildCommit(), design: 'cinematic-v3' }) });
+        this.emitFile({ type: 'asset', fileName: 'release.json', source: JSON.stringify({ commit: buildCommit(), design: 'cinematic-v4' }) });
       },
     },
   ],
@@ -30,7 +32,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('/node_modules/three/')) return 'three-renderer';
+          if (id.endsWith('/three/build/three.core.js')) return 'three-core';
+          if (id.endsWith('/three/build/three.module.js')) return 'three-renderer';
         },
       },
     },

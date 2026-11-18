@@ -6,6 +6,7 @@ export interface DishItem {
   subtitle: string;
   description: string;
   gallery: string[];
+  conceptVisual?: { card: string; large: string; alt: string };
 }
 
 export interface GalleryItem {
@@ -14,4 +15,6 @@ export interface GalleryItem {
   title: string;
   credit: string;
   caption: string;
+  large?: string;
+  conceptOnly?: boolean;
 }
