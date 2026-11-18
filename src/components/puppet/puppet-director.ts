@@ -2,7 +2,7 @@ import { contactPoint, distance, ease, mix, restingPose, shoulderOf, solveArm } 
 import type { Point, Pose } from './puppet-rig';
 
 type Kind = 'tap' | 'present' | 'visit' | 'happy';
-type Intent = { kind: Kind; node: HTMLElement; rect: DOMRect; start: number; contacted: boolean; retry: number };
+type Intent = { kind: Kind; node: HTMLElement; rect: DOMRect; elapsed: number; frameAt: number; contacted: boolean; retry: number };
 
 const TARGET = '[data-puppet-target]';
 const PAUSE_MS = 280;
@@ -81,7 +81,7 @@ export function startPuppetDirector(
     }
     clearIntent();
     entrance = false;
-    intent = { kind, node, rect, start: now, contacted: false, retry: 0 };
+    intent = { kind, node, rect, elapsed: 0, frameAt: now, contacted: false, retry: 0 };
     travelFrom = latest.anchor;
     requestFrame();
   }
@@ -159,9 +159,9 @@ export function startPuppetDirector(
     return pose;
   }
 
-  function animateIntent(current: Intent, now: number, s: number) {
+  function animateIntent(current: Intent, s: number) {
     const point = contactPoint(current.rect);
-    const age = now - current.start;
+    const age = current.elapsed;
     const desired = {
       x: Math.max(52, Math.min(innerWidth - 52, point.x - 75 * s)),
       y: Math.max(headerEdge + 24 * s, point.y - 91 * s),
@@ -255,14 +255,20 @@ export function startPuppetDirector(
     }
 
     const current = intent;
-    if (current && now - current.start < 1770) {
-      latest = animateIntent(current, now, s);
-      publish(latest);
-      attemptContact(current, latest);
-      requestFrame();
-      return;
+    if (current) {
+      // Large compositor stalls must not skip the contact window. Scroll
+      // cancellation is still immediate and uses the real input timestamp.
+      current.elapsed += Math.max(0, Math.min(96, now - current.frameAt));
+      current.frameAt = now;
+      if (current.elapsed < 1770) {
+        latest = animateIntent(current, s);
+        publish(latest);
+        attemptContact(current, latest);
+        requestFrame();
+        return;
+      }
+      clearIntent();
     }
-    if (current) clearIntent();
 
     const travelling = now - lastScrollAt < 175 || now - travelStart < 440;
     const anchor = mix(travelFrom, baseAnchor(), ease((now - travelStart) / 440));

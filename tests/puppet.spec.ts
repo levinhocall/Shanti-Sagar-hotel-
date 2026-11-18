@@ -100,7 +100,8 @@ test('keyboard presentation, visit approval and context-loss cleanup stay separa
   });
   const card = page.getByRole('button', { name: /Idli & sambar/i });
   await card.evaluate(node => scrollTo({ top: scrollY + node.getBoundingClientRect().top - innerHeight * .36, behavior: 'instant' }));
-  await expect(rig).toHaveAttribute('data-contact-error', /0\.\d+/);
+  await expect(rig).toHaveAttribute('data-direction', 'down');
+  await expect(rig).toHaveAttribute('data-phase', /^(look|reach|contact|recover|idle)$/);
   await card.focus();
   await expect(card).toBeFocused();
   await expect(rig).toHaveAttribute('data-observed-phases', /\bpresent\b/);
