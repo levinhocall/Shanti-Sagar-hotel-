@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Sparkles, ShieldCheck, ExternalLink, MessageCircle, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { MENU_ITEMS, RESTAURANT_INFO } from '../data/restaurantData';
-import { DishItem } from '../types';
+import type { DishItem } from '../types';
 
 export const FoodExplorer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -20,7 +20,8 @@ export const FoodExplorer: React.FC = () => {
           setActiveDish(found);
           setActiveModalImage(found.image);
         }
-      } else if (activeDish) {
+      } else {
+        // Functional-free reset: safe no-op when already closed, and avoids a stale closure over activeDish
         setActiveDish(null);
       }
     };

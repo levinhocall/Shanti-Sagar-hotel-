@@ -1,4 +1,4 @@
-import { DishItem, GalleryItem, FacilityItem, ReviewData, RestaurantMeta } from '../types';
+import type { DishItem, GalleryItem, FacilityItem, ReviewData, RestaurantMeta } from '../types';
 
 export const RESTAURANT_INFO: RestaurantMeta = {
   name: 'Shanti Sagar Pure Veg',

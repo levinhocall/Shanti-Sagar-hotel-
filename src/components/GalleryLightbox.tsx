@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Maximize2, X, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { GALLERY_ITEMS } from '../data/restaurantData';
-import { GalleryItem } from '../types';
+import type { GalleryItem } from '../types';
 
 export const GalleryLightbox: React.FC = () => {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);

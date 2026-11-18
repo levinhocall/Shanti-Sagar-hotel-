@@ -214,7 +214,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className, onLoaded })
     visibilityObserver.observe(container);
 
     // Animation Loop
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
