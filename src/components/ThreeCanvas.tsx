@@ -106,6 +106,7 @@ export default function ThreeCanvas({ angle, light, hotspot, onSelect, onFailure
   const [rotationOffset, setRotationOffset] = useState(0);
   const dragging = useRef(false);
   const lightStyle = LIGHTS[light];
+  const [compact] = useState(() => matchMedia('(pointer: coarse)').matches);
   const texture = useMemo(() => surfaceTexture(96), []);
   useEffect(() => () => texture.dispose(), [texture]);
 
@@ -113,12 +114,12 @@ export default function ThreeCanvas({ angle, light, hotspot, onSelect, onFailure
     <motion.div className="scene-interaction" onPanStart={() => { dragging.current = true; }}
       onPan={(_, info) => setRotationOffset(value => value + info.delta.x * .013)}
       onPanEnd={() => { requestAnimationFrame(() => { dragging.current = false; }); }}>
-      <Canvas camera={{ position: [0, 3.7, 3.9], fov: 46 }} frameloop="demand" dpr={[1, 1.4]} shadows
-        gl={{ antialias: true, alpha: true, powerPreference: 'low-power' }} fallback={null}
+      <Canvas camera={{ position: [0, 3.7, 3.9], fov: 46 }} frameloop="demand" dpr={compact ? 1 : [1, 1.4]} shadows
+        gl={{ antialias: !compact, alpha: true, powerPreference: 'low-power' }} fallback={null}
         aria-label="Interactive 3D vegetarian thali. Drag to rotate or use the rotation buttons.">
         <hemisphereLight args={[lightStyle.fill, '#3f2419', 1.25]} />
         <directionalLight position={[2, 5, 3]} color={lightStyle.color} intensity={lightStyle.intensity}
-          castShadow shadow-mapSize={[512, 512]} shadow-normalBias={.027}
+          castShadow shadow-mapSize={compact ? [256, 256] : [512, 512]} shadow-normalBias={.027}
           shadow-camera-left={-2} shadow-camera-right={2} shadow-camera-top={2} shadow-camera-bottom={-2} />
         <directionalLight position={[-3, 1, -4]} color="#d3b589" intensity={1.35} />
         <mesh position={[0, -.225, 0]} rotation={[rotation, 0, 0]} receiveShadow>

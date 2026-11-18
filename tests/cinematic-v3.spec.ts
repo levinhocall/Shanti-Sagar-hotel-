@@ -17,7 +17,7 @@ test('cinematic V3 stays usable from narrow phones to wide desktops', async ({ p
 
 test('3D JavaScript is absent from initial loading and WebP imagery resolves', async ({ page }) => {
   const threeRequests: string[] = []
-  page.on('request', request => { if (/\/(three-renderer|ThreeCanvas)-/.test(request.url())) threeRequests.push(request.url()) })
+  page.on('request', request => { if (/\/(three-core|three-renderer|ThreeCanvas)-/.test(request.url())) threeRequests.push(request.url()) })
   await page.goto('/')
   const hero = page.getByRole('img', { name: /Illustrative vegetarian thali/ })
   await expect.poll(() => hero.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
@@ -82,4 +82,10 @@ test('mobile navigation supports Escape and all detail controls remain keyboard-
   await page.keyboard.press('Escape')
   await expect(page.getByRole('dialog')).toBeHidden()
   await expect(card).toBeFocused()
+})
+
+test('the mobile hero exposes its primary action in the first screen', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 660 })
+  await page.goto('/')
+  await expect(page.getByRole('link', { name: 'Explore Menu' })).toBeInViewport({ ratio: 1 })
 })
