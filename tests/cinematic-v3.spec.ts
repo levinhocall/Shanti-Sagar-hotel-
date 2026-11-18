@@ -53,7 +53,8 @@ test('no WebGL keeps the photo and controls usable', async ({ page }) => {
   await expect(page.getByRole('status')).toContainText('3D is unavailable')
   await expect(page.locator('canvas')).toHaveCount(0)
   await page.getByRole('button', { name: 'Paneer', exact: true }).click()
-  await expect(page.getByRole('img', { name: 'Illustrative photo of paneer curry' })).toBeVisible()
+  const table = page.getByRole('region', { name: 'A seat at the table.' })
+  await expect(table.getByRole('img', { name: 'Illustrative photo of paneer curry' })).toBeVisible()
 })
 
 test('homepage and sample dish dialog pass axe WCAG A and AA rules', async ({ page }) => {
