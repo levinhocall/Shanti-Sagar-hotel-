@@ -204,3 +204,37 @@
     scroll-behavior: auto !important;
   }
 }
+
+
+/* Responsive cinematic polish: accessible motion without layout shifts */
+@keyframes cinematicEntrance {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+#home .btn-cinema, #home .btn-cinema-outline {
+  animation: cinematicEntrance 850ms cubic-bezier(.16,1,.3,1) both;
+  animation-delay: 300ms;
+}
+#home .btn-cinema-outline { animation-delay: 420ms; }
+#home h1 { overflow-wrap: anywhere; }
+#home .line-reveal > span { animation-duration: 900ms; }
+#home .line-reveal:nth-child(2) > span { animation-delay: 140ms; }
+#home a:focus-visible, header button:focus-visible {
+  outline: 2px solid #F0D495;
+  outline-offset: 4px;
+}
+@media (max-width: 639px) {
+  #home .line-reveal { overflow: visible; }
+  #home h1 { letter-spacing: -.035em; }
+  #home .btn-cinema, #home .btn-cinema-outline {
+    max-width: 100%;
+    text-align: center;
+    font-size: .7rem;
+    letter-spacing: .1em;
+    padding: .8rem 1.15rem;
+  }
+  #home .font-mono { letter-spacing: .07em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #home .btn-cinema, #home .btn-cinema-outline { animation: none; }
+}
