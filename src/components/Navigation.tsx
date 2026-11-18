@@ -39,11 +39,12 @@ export function Navigation() {
         <span className="brand-mark"><Plant size={23} aria-hidden /></span>
         <span>Shanti Sagar <small>Pure Veg</small></span>
       </a>
-      <nav className="desktop-nav" aria-label="Main navigation">
+      <nav className="desktop-nav" aria-label="Main navigation" data-mascot-reaction="curious">
         {links.map(([label, id]) => <a key={id} href={`#${id}`} aria-current={current === id ? 'location' : undefined}>{label}</a>)}
       </nav>
-      <a className="button button-small header-visit" href="#location">Plan a visit <ArrowUpRight size={16} aria-hidden /></a>
-      <button className="icon-button mobile-toggle" aria-label="Open navigation" aria-expanded={open} aria-controls="mobile-menu"
+      <a className="button button-small header-visit" href="#location" data-mascot-reaction="approval">Plan a visit <ArrowUpRight size={16} aria-hidden /></a>
+      <div className="header-mascot-slot" id="header-mascot-slot" />
+      <button data-mascot-reaction="curious" className="icon-button mobile-toggle" aria-label="Open navigation" aria-expanded={open} aria-controls="mobile-menu"
         onClick={() => { dialog.current?.showModal(); setOpen(true); }}>
         <span className="menu-glyph" aria-hidden><i /><i /></span>
       </button>
