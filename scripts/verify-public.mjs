@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 const [url, expectedCommit] = process.argv.slice(2)
 if (!url || !url.startsWith('https://')) throw new Error('Pass the actual public HTTPS deployment URL')
 if (!/^[a-f0-9]{40}$/.test(expectedCommit ?? '')) throw new Error('Pass the full expected git commit SHA')
-const marker = await fetch(new URL('/release.json', url), { cache: 'no-store' })
+const marker = await globalThis.fetch(new URL('/release.json', url), { cache: 'no-store' })
 assert.equal(marker.status, 200)
 assert.deepEqual(await marker.json(), { commit: expectedCommit, design: 'cinematic-v3' })
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] })
