@@ -1,149 +1,67 @@
-# Shanti Sagar Pure Veg — Cinematic V2
+# Shanti Sagar Pure Veg · Cinematic V3
 
-Current deployment: https://shanti-sagar-hotel.meetatiwari47.workers.dev
+[Existing Cloudflare Worker](https://shanti-sagar-hotel.meetatiwari47.workers.dev)
 
-See [Cinematic V2 release notes](docs/CINEMATIC-V2.md) for the original redesign,
-responsive/animation verification, 3D chunk analysis and dependency audit.
+This independent restaurant concept extends the React, TypeScript, Vite and
+Tailwind project on main. The food explorer, gallery, still life and visit
+sections are usable without WebGL. The optional 3D thali uses React Three Fiber
+and renders on demand. Motion handles card filtering, the shared dish image,
+the scroll reveal and pan feedback. Pinned desktop story imagery uses CSS
+sticky positioning and the page uses native scrolling.
 
-An unofficial restaurant demonstration built on the existing React + TypeScript
-+ Vite project. All design and interactive components are original. The
-incomplete 21st.dev dependency and integration placeholder have been replaced.
+## Build and verify
 
-## Start and build
-
-Use Node.js 24 (recommended), or a compatible supported Node.js version for the installed Vite/ESLint tools.
-
-```sh
-npm ci
-npm run dev
-npm run typecheck
-npm run lint
-npm run build
-npm run preview
-```
-
-Components: `components/ui/`. Styles: `src/index.css`. `cn`: `lib/utils.ts`.
-The `@/*` alias resolves to the project root. `components.json` retains the
-shadcn-compatible structure; no component marketplace or paid UI kit is needed.
-
-## Experience
-
-- Cinematic original hero with pointer depth, animated typography and magnetic CTAs.
-- Optional original Three.js / React Three Fiber / Drei table sculpture. Porcelain,
-  gold knot and leaves are decorative art, not a simulated photorealistic dish.
-- Lightweight CSS still life is the default on every device. 3D downloads only
-  on explicit activation, limits DPR to 1–1.5, pauses its render loop offscreen
-  or in a hidden tab, and falls back on WebGL failure or context loss.
-- Motion reveals, FLIP menu filtering and shared-image dish drill-down transitions.
-- Native full-screen dialogs with focus containment, Escape, Back/Forward history,
-  direct query links, return focus and scroll restoration.
-- Dish imagery, information tabs and explicit ingredient/dietary verification notes.
-- Embla touch carousel and editorial gallery with keyboard/swipe lightbox.
-- Locally hosted responsive demo photography and open-license fonts.
-- User-initiated Google Maps search embed and safe configurable contact actions.
-- Reduced-motion support throughout. GSAP was intentionally omitted: Motion and
-  CSS cover the effects without a second animation runtime.
-
-## Business information and configurable actions
-
-Edit `src/data.ts`. The name, exact address, vegetarian/South Indian positioning,
-facilities and rating snapshot are user-supplied. Rating **3.8/5, 1,364 reviews**
-is explicitly displayed as user-supplied demo information, not a live score.
-No guest reviews, actual menu prices, recipe details, allergens, nutritional
-claims, phone numbers or restaurant history have been invented.
-
-Earlier location cross-checks: [District](https://www.district.in/dining/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane)
-and [Zomato](https://www.zomato.com/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane).
-Published listings may change; confirm details before visiting.
-
-The following destinations default to empty strings and leave the associated
-buttons disabled until verified:
-
-- `googleMapsListing`: exact verified Google Maps business/reviews URL.
-- `phone`: international phone number for a `tel:` link.
-- `whatsapp`: verified full HTTPS WhatsApp enquiry URL.
-- `orderOnline`: verified full HTTPS ordering URL.
-
-Directions and the map embed deliberately use a labeled **Google Maps search**
-until an exact listing is configured. The map loads only when requested. Existing
-District and Zomato listing links remain available. There is no enquiry storage,
-reservation backend, order processing or payment integration.
-
-## Photography and fonts
-
-All photographs are local licensed Unsplash demo images, not restaurant photos.
-Photo source IDs are recorded in `src/data.ts`; see `docs/ASSET-LICENSES.md`.
-Dishes and details are sample concepts, not confirmed menu items. The idli photo
-is correctly labeled as idli, rather than the previous sample dosa label.
-Replace sample imagery and menu content with restaurant-approved material before
-using this as an official site. Fonts are self-hosted Cormorant Garamond and
-Manrope; font licenses ship in `public/licenses/`.
-
-## Browser tests
-
-```sh
-npm run test:e2e
-```
-
-The committed Playwright configuration uses the installed Chromium at
-`/usr/bin/chromium`. Elsewhere, set `CHROMIUM_PATH` to your Chromium executable,
-or remove `executablePath` and run `npx playwright install chromium`. Software
-WebGL flags in the test configuration support 3D verification in this cloud
-machine; they do not affect visitors’ browsers. Tests cover desktop and Pixel 7
-emulation (reduced motion). Emulation is not a physical Android device test.
-
-See `docs/VERIFICATION.md` for actual results and limitations. Contact actions
-stay disabled during tests; the external map is stubbed to avoid reliance on a
-third-party service. Screenshots are in `docs/preview-*.png`.
-
-## Deploy to the existing Cloudflare Worker
-
-The user confirmed GitHub automatic deployment is connected to this repository.
-Keep the Worker name `shanti-sagar-hotel` and the existing account/domain.
-`wrangler.jsonc` serves the production `dist/` directory with SPA fallback.
+Use Node.js 24.
 
 ```sh
 npm ci
 npm run typecheck
 npm run lint
 npm run build
-npm run check:worker
-npm run test:production
+npx playwright install --with-deps chromium webkit
+PLAYWRIGHT_WEBKIT=1 npm run test:prod
 ```
 
-Push the verified commit to the connected branch to trigger the existing
-Cloudflare build. Build command: `npm run build`. Deployment command:
-`npm run deploy` (or `npx wrangler deploy`). For a manual authorized deployment,
-run `npm run deploy` only after building and authenticating Wrangler to the
-existing account. No account identifiers or credentials are committed.
+The [V3 Quality Gate](.github/workflows/v3-ci.yml) runs these checks on feature
+and production branches and uploads browser evidence and the production build.
+Playwright covers desktop Chromium, Pixel 7 emulation and iPhone 13 WebKit
+emulation. The suite includes keyboard navigation, motion preferences,
+horizontal overflow, WebGL loading/fallback and axe accessibility checks.
+Emulation gives browser-engine and layout coverage. Physical device testing
+requires Android Chrome and iOS Safari devices.
 
-## Alternative Vercel deployment (existing compatibility retained)
+Source sections are in `src/components/`, business data in
+`src/data/restaurantData.ts`, and design tokens in `src/styles/`.
 
-**Android: use [the phone deployment guide](docs/ANDROID-DEPLOYMENT.md).**
-Vercel Drop accepts either supplied ZIP directly, without GitHub or a terminal.
-Use `shanti-sagar-deploy.zip` for the already-built demo, or
-`shanti-sagar-source.zip` for a framework build.
-Run `python3 scripts/package-demo.py` after a build to regenerate both archives.
+## Public listings and sample content
 
-The following Git import method remains available if you prefer it.
+[Zomato](https://www.zomato.com/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane)
+lists the restaurant’s Camp Road address, cuisine categories and telephone.
+[District](https://www.district.in/dining/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane)
+corroborates the location and provides a live destination for posted hours.
+The map uses a Google Maps search and requests an embed only when activated.
+External listing links handle reviews and ordering. The demo does not process
+orders or collect contact details.
 
-This static project requires no runtime secrets. The current verified release
-is on Cloudflare; see `docs/PUBLIC-DEPLOYMENT.json`. Vercel configuration remains
-available as an alternative and does not replace the existing Cloudflare URL.
+The hero and sample dosa use AI concept images. The stock food photography is illustrative,
+and the sample menu makes no official price, ingredient or allergen claims.
+See [asset credits](docs/ASSET-LICENSES.md). Replace sample food content with
+restaurant-approved material before presenting this as the official site.
 
-1. Push this project directory and `package-lock.json` to your Git repository.
-2. In Vercel, choose **Add New → Project → Import Git Repository**.
-3. Set root directory to this project’s directory, framework **Vite**, install
-   command `npm ci`, build command `npm run build`, output directory `dist`.
-4. Deploy. Copy the actual `https://…vercel.app` URL returned after success.
-5. Vercel’s Git integration can create preview deployments for later pull requests.
+## Cloudflare release verification
 
-Alternatively, in this directory run `npx vercel`, sign in to your account and
-follow its prompts. Use `npx vercel --prod` for the production alias. Check current
-Vercel Hobby eligibility and terms for your intended use. `vercel.json` includes
-Vite build settings and basic response headers. Query-string dish/gallery links
-work on this single-page static site without additional rewrite rules.
+Preserve the connected production branch and existing `shanti-sagar-hotel`
+Worker. The Worker configuration serves `dist/`. Build with `npm run build`
+and deploy with `npx wrangler deploy` through the existing Cloudflare setup.
 
-The unofficial demo includes `noindex,follow` metadata to avoid impersonating the
-restaurant in search results. Remove it, and configure absolute canonical/social
-URLs, only when the appropriate official/public site identity has been confirmed.
+After the production deploy completes, check the exact deployed revision and
+run the public browser smoke test.
+
+```sh
+node scripts/verify-public.mjs \
+  https://shanti-sagar-hotel.meetatiwari47.workers.dev \
+  FULL_MAIN_COMMIT_SHA
+```
+
+The script compares `/release.json` with the expected commit before testing
+the public homepage. Prior release evidence remains in [the V2 notes](docs/CINEMATIC-V2.md).

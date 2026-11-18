@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { MotionConfig, LayoutGroup } from 'motion/react';
 import { Navigation } from './components/Navigation';
 import { CinematicHero } from './components/CinematicHero';
 import { RestaurantStory } from './components/RestaurantStory';
@@ -9,64 +9,30 @@ import { GalleryLightbox } from './components/GalleryLightbox';
 import { ReviewsAndRatings } from './components/ReviewsAndRatings';
 import { LocationAndContact } from './components/LocationAndContact';
 import { Footer } from './components/Footer';
+import { ExplorerDialog } from './components/ExplorerDialog';
+import { useExplorer } from './hooks/use-explorer';
 
-export const App: React.FC = () => {
-  useEffect(() => {
-    const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section'));
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion || !('IntersectionObserver' in window)) return;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('scene-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    sections.forEach((section) => {
-      if (section.getBoundingClientRect().top < window.innerHeight * 0.9) return;
-      section.classList.add('scene-reveal');
-      observer.observe(section);
-    });
-    return () => observer.disconnect();
-  }, []);
-
+export default function App() {
+  const explorer = useExplorer();
   return (
-    <div className="min-h-screen bg-[#080D0B] text-[#FFF7E8] font-sans selection:bg-[#D6B56E] selection:text-[#080D0B]">
-      {/* Sticky Glass Navigation */}
-      <Navigation />
-
-      {/* Main Exhibition Flow */}
-      <main id="main" data-design-version="cinematic-v3">
-        {/* Scene 1: Arrival & Hero */}
-        <CinematicHero />
-
-        {/* Scene 2: Restaurant Story & Ethos */}
-        <RestaurantStory />
-
-        {/* Scene 3: Interactive Table Sculpture */}
-        <TableExperience />
-
-        {/* Scene 4: Flagship Food Product Explorer */}
-        <FoodExplorer />
-
-        {/* Scene 5: Dining Sanctuary & Facilities */}
-        <DiningFacilities />
-
-        {/* Scene 6: Visual Journal & Masonry Lightbox */}
-        <GalleryLightbox />
-
-        {/* Scene 7: Verified Ratings & Testimonials */}
-        <ReviewsAndRatings />
-
-        {/* Scene 8: Location, Map & Contact CTAs */}
-        <LocationAndContact />
-      </main>
-
-      {/* Elegant Footer Conclusion */}
-      <Footer />
-    </div>
+    <MotionConfig reducedMotion="user" transition={{ duration: .5, ease: [.22, 1, .36, 1] }}>
+      <LayoutGroup id="shanti-sagar">
+        <a className="skip-link" href="#main">Skip to content</a>
+        <div className="concept-banner">Unofficial website concept</div>
+        <Navigation />
+        <main id="main" tabIndex={-1} data-design-version="cinematic-v3">
+          <CinematicHero />
+          <FoodExplorer open={explorer.open} />
+          <RestaurantStory />
+          <TableExperience />
+          <DiningFacilities />
+          <GalleryLightbox open={explorer.open} />
+          <ReviewsAndRatings />
+          <LocationAndContact />
+        </main>
+        <Footer />
+        <ExplorerDialog panel={explorer.panel} onClose={explorer.close} onChange={explorer.change} onExit={explorer.restore} />
+      </LayoutGroup>
+    </MotionConfig>
   );
-};
-
-export default App;
+}
