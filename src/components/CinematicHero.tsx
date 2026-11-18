@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowDown, Award, Sparkles, MapPin } from 'lucide-react';
 import { ThreeCanvas } from './ThreeCanvas';
 import { RESTAURANT_INFO } from '../data/restaurantData';
@@ -8,6 +8,7 @@ interface CinematicHeroProps {
 }
 
 export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) => {
+  const [showThreeD, setShowThreeD] = useState(false);
   return (
     <section
       id="home"
@@ -103,9 +104,27 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
           {/* Circular Backdrop Aura */}
           <div className="absolute inset-0 m-auto w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-radial from-[#103D32]/50 to-transparent blur-2xl pointer-events-none" />
 
-          {/* Three.js Interactive Component */}
-          <div className="w-full max-w-[460px] aspect-square relative z-10 min-h-[240px]">
-            <ThreeCanvas className="w-full h-full" />
+          {/* Food-first hero: render immediately; optional 3D loads only on demand. */}
+          <div className="relative z-10 w-full max-w-[520px] mx-auto">
+            <div className="relative aspect-[5/4] sm:aspect-square rounded-[2rem] overflow-hidden border border-[#D6B56E]/30 shadow-[0_28px_90px_rgba(0,0,0,.5)]">
+              {showThreeD ? (
+                <ThreeCanvas className="w-full h-full" />
+              ) : (
+                <picture>
+                  <source media="(max-width: 600px)" srcSet="/images/feast-480.webp" type="image/webp" />
+                  <source media="(max-width: 1000px)" srcSet="/images/feast-900.webp" type="image/webp" />
+                  <img src="/images/feast-1800.webp" alt="Illustrative vegetarian dining feast" fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover hero-food-image" />
+                </picture>
+              )}
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#080D0B]/70 via-transparent to-transparent" />
+              <div className="absolute bottom-5 left-5 right-5 flex flex-wrap items-center justify-between gap-3">
+                <span className="text-xs uppercase tracking-[.18em] text-[#FFF7E8] font-medium">A feast for the senses</span>
+                <button type="button" onClick={() => setShowThreeD((value) => !value)} className="relative z-20 rounded-full bg-[#D6B56E] text-[#080D0B] px-4 py-2.5 text-xs font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
+                  {showThreeD ? 'VIEW FOOD' : 'EXPLORE 3D'}
+                </button>
+              </div>
+            </div>
+            <p className="mt-3 text-center text-xs text-[#FFF7E8]/55">Illustrative food photography · Interactive concept</p>
           </div>
 
           {/* Floating Aesthetic Seals */}
