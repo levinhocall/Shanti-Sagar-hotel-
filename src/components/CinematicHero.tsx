@@ -11,7 +11,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
   return (
     <section
       id="home"
-      className="relative min-h-[100dvh] w-full flex flex-col justify-between pt-24 pb-10 px-5 sm:px-8 overflow-hidden bg-[#080D0B]"
+      className="relative min-h-[100dvh] w-full flex flex-col justify-between pt-28 sm:pt-32 pb-10 px-5 sm:px-8 overflow-hidden bg-[#080D0B]"
       aria-label="Welcome to Shanti Sagar Pure Veg"
     >
       {/* Cinematic Background Atmosphere Layers */}
@@ -32,10 +32,10 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
       </div>
 
       {/* Top Metadata Bar: Coordinates & Verified Badge */}
-      <div className="relative z-10 max-w-7xl mx-auto w-full flex items-center justify-between text-xs font-mono tracking-widest text-[#D6B56E]/80 pt-2 border-b border-[#D6B56E]/10 pb-3">
-        <div className="flex items-center gap-2">
+      <div className="relative z-10 max-w-7xl mx-auto w-full flex items-center justify-between text-[10px] sm:text-xs font-mono tracking-wide sm:tracking-widest text-[#D6B56E]/80 pt-2 border-b border-[#D6B56E]/10 pb-3">
+        <div className="flex items-center gap-2 min-w-0">
           <MapPin size={13} className="text-[#D6B56E]" />
-          <span>19.2215° N, 73.1645° E · ULHASNAGAR, MAHARASHTRA</span>
+          <span className="break-words">ULHASNAGAR · MAHARASHTRA</span>
         </div>
         <div className="hidden sm:flex items-center gap-3">
           <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#103D32]/40 border border-[#D6B56E]/30 text-[11px] text-[#FFF7E8]">
@@ -47,15 +47,15 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
       </div>
 
       {/* Hero Center Grid: Dynamic Headlines + 3D Centerpiece */}
-      <div className="relative z-10 max-w-7xl mx-auto w-full my-auto py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto w-full my-auto py-10 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         {/* Left Editorial Copy */}
-        <div className="lg:col-span-7 flex flex-col justify-center">
+        <div className="lg:col-span-7 flex flex-col justify-center min-w-0">
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#103D32]/50 border border-[#D6B56E]/30 text-[#D6B56E] text-xs font-mono tracking-[0.2em] uppercase mb-6 w-fit">
             <Sparkles size={13} />
             EXEMPLARY CULINARY EXHIBITION
           </div>
 
-          <h1 className="font-editorial text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-[#FFF7E8] leading-[0.95] mb-6">
+          <h1 className="font-editorial text-[clamp(2.3rem,9vw,6.5rem)] font-bold tracking-tight text-[#FFF7E8] leading-[1.08] mb-6 break-words">
             <span className="block line-reveal">
               <span>PURE VEGETARIAN.</span>
             </span>
@@ -69,7 +69,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
             aromatic North Indian curries, and the timeless ritual of pure vegetarian dining in Ulhasnagar.
           </p>
 
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <a
               href="#menu"
               onClick={(e) => {
@@ -99,12 +99,12 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onExploreClick }) 
         </div>
 
         {/* Right Interactive 3D Canvas / Centerpiece */}
-        <div className="lg:col-span-5 relative flex items-center justify-center">
+        <div className="lg:col-span-5 relative flex items-center justify-center min-w-0">
           {/* Circular Backdrop Aura */}
           <div className="absolute inset-0 m-auto w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-radial from-[#103D32]/50 to-transparent blur-2xl pointer-events-none" />
 
           {/* Three.js Interactive Component */}
-          <div className="w-full max-w-[460px] aspect-square relative z-10">
+          <div className="w-full max-w-[460px] aspect-square relative z-10 min-h-[240px]">
             <ThreeCanvas className="w-full h-full" />
           </div>
 
