@@ -24,10 +24,10 @@ export const MENU_ITEMS: DishItem[] = [
     id: 'masala-dosa',
     name: 'Masala dosa',
     category: 'South Indian',
-    image: '/images/dosa.webp',
+    image: '/images/masala-dosa-concept.webp',
     subtitle: 'Golden crispness with spiced potato warmth.',
     description: 'Thin, crispy crepe roasted on a hot flat-top seasoned cast iron tawa until bronzed and crisp, wrapped around gently spiced turmeric potato masala, served with aromatic piping hot sambar.',
-    gallery: ['/images/dosa.webp', '/images/feast.webp'],
+    gallery: ['/images/masala-dosa-concept.webp', '/images/feast.webp'],
   },
   {
     id: 'paneer-curry',

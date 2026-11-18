@@ -16,8 +16,9 @@ export function CinematicHero() {
       </motion.div>
       <figure className="hero-photo">
         <FoodImage className="hero-food-image" src="/images/thali-concept-900.webp"
-          srcSet="/images/thali-concept-480.webp 480w, /images/thali-concept-900.webp 900w, /images/thali-concept-1440.webp 1440w"
-          sizes="(min-width: 1000px) 56vw, 100vw" alt="Illustrative vegetarian thali with shared accompaniments"
+          source={{ media: '(min-width: 701px)', srcSet: '/images/thali-concept-900.webp 900w, /images/thali-concept-1440.webp 1440w', sizes: '56vw' }}
+          srcSet="/images/thali-concept-480.webp 480w, /images/thali-concept-900.webp 900w"
+          sizes="calc(100vw - 32px)" alt="Illustrative vegetarian thali with shared accompaniments"
           fetchPriority="high" />
         <figcaption>AI concept image</figcaption>
       </figure>

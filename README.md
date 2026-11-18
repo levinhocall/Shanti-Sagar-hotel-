@@ -43,7 +43,7 @@ The map uses a Google Maps search and requests an embed only when activated.
 External listing links handle reviews and ordering. The demo does not process
 orders or collect contact details.
 
-The hero uses an AI concept image. The other food photography is illustrative,
+The hero and sample dosa use AI concept images. The stock food photography is illustrative,
 and the sample menu makes no official price, ingredient or allergen claims.
 See [asset credits](docs/ASSET-LICENSES.md). Replace sample food content with
 restaurant-approved material before presenting this as the official site.

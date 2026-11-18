@@ -26,7 +26,7 @@ try {
       await page.getByRole('button', { name: 'Open navigation' }).click()
       await page.getByRole('navigation', { name: 'Mobile navigation' }).getByRole('link', { name: /Menu/ }).click()
     }
-    const card = page.getByRole('button', { name: 'Explore Paneer curry, sample dish' })
+    const card = page.getByRole('button', { name: /Paneer curry/i })
     await card.click()
     await page.getByRole('dialog').waitFor({ state: 'visible' })
     assert.match(page.url(), /dish=paneer-curry/)

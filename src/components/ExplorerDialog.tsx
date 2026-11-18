@@ -56,9 +56,8 @@ function DishDetail({ dish, onClose }: { dish: DishItem; onClose: () => void }) 
       <div className="detail-grid">
         <motion.div className="detail-image" layoutId={reduced ? undefined : `dish-image-${dish.id}`}
           transition={{ type: 'spring', stiffness: 240, damping: 31 }} {...swipe}>
-          {dish.id === 'masala-dosa' && image === 0
-            ? <div className="dish-no-photo"><span>Sample dish</span></div>
-            : <FoodImage src={dish.gallery[image]} alt={`${dish.name} visual moodboard, image ${image + 1}. Illustrative photography.`} />}
+          <FoodImage src={dish.gallery[image]} alt={`${dish.name} visual moodboard, image ${image + 1}. Illustrative food image.`} />
+          {dish.id === 'masala-dosa' && image === 0 && <span className="photo-label">AI concept image</span>}
           <div className="image-controls">
             <button className="icon-button" aria-label="Previous dish image" onClick={() => move(-1)}><CaretLeft aria-hidden /></button>
             <span aria-live="polite">{image + 1} / {dish.gallery.length}</span>

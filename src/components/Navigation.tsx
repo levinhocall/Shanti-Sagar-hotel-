@@ -35,9 +35,9 @@ export function Navigation() {
 
   return (
     <header className="site-header shell">
-      <a className="brand" href="#home" aria-label="Shanti Sagar Pure Veg Home">
+      <a className="brand" href="#home">
         <span className="brand-mark"><Plant size={23} aria-hidden /></span>
-        <span>Shanti Sagar<small>Pure Veg</small></span>
+        <span>Shanti Sagar <small>Pure Veg</small></span>
       </a>
       <nav className="desktop-nav" aria-label="Main navigation">
         {links.map(([label, id]) => <a key={id} href={`#${id}`} aria-current={current === id ? 'location' : undefined}>{label}</a>)}

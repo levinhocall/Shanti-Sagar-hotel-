@@ -17,7 +17,7 @@ export function FoodExplorer({ open }: Props) {
       <div className="shell">
         <div className="section-heading">
           <div><p className="eyebrow">Food explorer</p><h2 id="menu-heading">What are you craving?</h2></div>
-          <p>Browse sample dishes inspired by the cuisines on the restaurant’s public listing. Photography is illustrative.</p>
+          <p id="sample-menu-note">Browse sample dishes inspired by the cuisines on the restaurant’s public listing. Photography is illustrative.</p>
         </div>
         <div className="filter-row" aria-label="Filter dishes" role="group">
           {categories.map(item => <button key={item} type="button" aria-pressed={item === category} onClick={() => setCategory(item)}>{item}</button>)}
@@ -28,11 +28,10 @@ export function FoodExplorer({ open }: Props) {
               <motion.button className="dish" key={dish.id} layout={!reduced}
                 initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                 whileHover={reduced ? undefined : { y: -4 }} whileTap={reduced ? undefined : { scale: .98 }}
-                aria-label={`Explore ${dish.name}, sample dish`} onClick={event => open({ kind: 'dish', id: dish.id }, event.currentTarget)}>
+                aria-describedby="sample-menu-note" onClick={event => open({ kind: 'dish', id: dish.id }, event.currentTarget)}>
                 <motion.div className="dish-image" layoutId={!reduced ? `dish-image-${dish.id}` : undefined}
                   transition={{ type: 'spring', stiffness: 240, damping: 31 }}>
-                  {dish.id === 'masala-dosa' ? <div className="dish-no-photo"><span>Sample dish</span></div> :
-                    <FoodImage src={dish.image.replace('.webp', '-480.webp')} alt="" loading="lazy" decoding="async" />}
+                  <FoodImage src={dish.image.replace('.webp', '-480.webp')} alt="" loading="lazy" decoding="async" />
                 </motion.div>
                 <div className="dish-label"><div><span>{dish.category}</span><h3>{dish.name}</h3></div><ArrowUpRight size={24} aria-hidden /></div>
               </motion.button>

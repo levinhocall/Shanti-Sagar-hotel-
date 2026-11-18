@@ -29,8 +29,8 @@ from the supplied reference video or MotionSites were copied into the project.
 
 ## V3 assets
 
-The `thali-concept-*.webp` files are responsive encodes of an AI-generated
-concept image commissioned for this independent demo. The interface labels
-that image and the procedural 3D table as illustrative. V3 uses the bundled
+The `thali-concept-*.webp` and `masala-dosa-concept*.webp` files are responsive
+encodes of AI-generated images made for this demo. The interface labels the
+food imagery and the procedural 3D table as illustrative. V3 uses the bundled
 Manrope variable font under the existing SIL Open Font License. Phosphor icons
 and the existing sample photography retain their respective licenses.
