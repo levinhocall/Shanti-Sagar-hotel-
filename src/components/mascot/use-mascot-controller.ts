@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import type { RefObject } from 'react';
 
-const DWELL_MS = 850;
+const DWELL_MS = 650;
 const CARD = '.dish[data-dish-id]';
-type DishCue = { phase: 'idle' | 'notice' | 'react'; id: string | null };
-const idle: DishCue = { phase: 'idle', id: null };
+export type DishCue = {
+  phase: 'idle' | 'notice' | 'react';
+  id: string | null;
+  cardTopRatio: number;
+};
+const idle: DishCue = { phase: 'idle', id: null, cardTopRatio: 0.5 };
 
 export function useMascotController(root: RefObject<HTMLElement>, view: string, category: string, enabled: boolean) {
   const [cue, setCue] = useState<DishCue>(idle);
@@ -25,6 +29,13 @@ export function useMascotController(root: RefObject<HTMLElement>, view: string, 
     let moving = false;
     const reacted = new WeakSet<HTMLElement>();
 
+    function getCardTopRatio(card: HTMLElement) {
+      const rect = card.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const vh = window.innerHeight || 800;
+      return Math.max(0.18, Math.min(0.82, center / vh));
+    }
+
     function cancel() {
       window.clearTimeout(dwell);
       window.clearTimeout(release);
@@ -38,19 +49,27 @@ export function useMascotController(root: RefObject<HTMLElement>, view: string, 
       const id = card?.dataset.dishId;
       if (!card || !id || document.hidden || reacted.has(card)) return;
       current = card;
-      setCue({ phase: 'notice', id });
+      const ratio = getCardTopRatio(card);
+      setCue({ phase: 'notice', id, cardTopRatio: ratio });
       dwell = window.setTimeout(() => {
         if (current !== card || !card.isConnected) return;
         reacted.add(card);
-        setCue({ phase: 'react', id });
-        release = window.setTimeout(cancel, 1800);
+        setCue({ phase: 'react', id, cardTopRatio: getCardTopRatio(card) });
+        release = window.setTimeout(cancel, 3600);
       }, DWELL_MS);
     }
 
     function fromViewport() {
       if (moving || document.hidden) return;
       if (pinned) { choose(pinned); return; }
-      const candidates = cards.filter(card => card.isConnected && (ratios.get(card) ?? 0) >= .65);
+      const vh = window.innerHeight || 800;
+      const candidates = cards
+        .filter(card => card.isConnected && (ratios.get(card) ?? 0) >= 0.45)
+        .sort((a, b) => {
+          const aDist = Math.abs(a.getBoundingClientRect().top + a.getBoundingClientRect().height / 2 - vh / 2);
+          const bDist = Math.abs(b.getBoundingClientRect().top + b.getBoundingClientRect().height / 2 - vh / 2);
+          return aDist - bDist;
+        });
       choose(candidates.find(card => !reacted.has(card)) ?? null);
     }
 
@@ -61,7 +80,7 @@ export function useMascotController(root: RefObject<HTMLElement>, view: string, 
         if (!entry.isIntersecting) reacted.delete(card);
       }
       fromViewport();
-    }, { rootMargin: '-70px 0px 0px', threshold: [0, .65] });
+    }, { rootMargin: '-70px 0px 0px', threshold: [0, 0.45, 0.65] });
     cards.forEach(card => observer.observe(card));
 
     function target(node: EventTarget | null) {
@@ -89,7 +108,7 @@ export function useMascotController(root: RefObject<HTMLElement>, view: string, 
       moving = true;
       pinned = null;
       window.clearTimeout(restart);
-      restart = window.setTimeout(() => { moving = false; fromViewport(); }, 125);
+      restart = window.setTimeout(() => { moving = false; fromViewport(); }, 140);
     }
     function onVisibility() { if (document.hidden) cancel(); else fromViewport(); }
     section.addEventListener('pointerover', onEnter);

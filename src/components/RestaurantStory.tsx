@@ -32,9 +32,9 @@ export function RestaurantStory() {
     <section id="story" className="story section" tabIndex={-1} aria-labelledby="story-heading">
       <div className="shell">
         <motion.h2 id="story-heading" className="story-tagline" initial={reduced ? false : 'muted'} whileInView="shown" viewport={{ once: true, amount: .6 }}>
-          {lines.map((line, lineIndex) => <span className="story-line" key={line}>{lineIndex > 0 && ' '}{line.split(' ').map(word => {
+          {lines.map((line, lineIndex) => <span className="story-line" key={line}>{lineIndex > 0 && ' '}{line.split(' ').map((word, wordIndex) => {
             const delay = delayIndex++ * .078;
-            return <motion.span key={word} variants={{ muted: { opacity: .7 }, shown: { opacity: 1, transition: { delay: reduced ? 0 : delay, duration: .34 } } }}>{word}{' '}</motion.span>;
+            return <motion.span key={`${lineIndex}-${wordIndex}`} variants={{ muted: { opacity: .7 }, shown: { opacity: 1, transition: { delay: reduced ? 0 : delay, duration: .34 } } }}>{word}{' '}</motion.span>;
           })}</span>)}
         </motion.h2>
         <div className="scroll-story" ref={story}>

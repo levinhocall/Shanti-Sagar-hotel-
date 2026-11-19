@@ -2,11 +2,12 @@ import { useRef, useState } from 'react';
 import { SushiConveyorMenu } from '@/components/ui/sushi-conveyor-menu';
 import type { DishTier } from '@/components/ui/sushi-conveyor-menu';
 import { ArrowUpRight } from '@phosphor-icons/react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react';
 import { MENU_ITEMS } from '../data/restaurantData';
 import type { Panel } from '../hooks/use-explorer';
 import { FoodImage } from './FoodImage';
 import { InteractiveMascot } from './mascot/InteractiveMascot';
+import { FloatingHost } from './mascot/FloatingHost';
 import { useMascotController } from './mascot/use-mascot-controller';
 import { mascotImage } from './mascot/mascot-expressions';
 import type { MascotExpression } from './mascot/mascot-expressions';
@@ -24,6 +25,7 @@ export function FoodExplorer({ open, showHost }: Props) {
   const [view, setView] = useState<'grid' | 'conveyor'>('grid');
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  const inMenu = useInView(root, { amount: 0.15 });
   const cue = useMascotController(root, view, category, showHost && view === 'grid' && !reduced);
   const expression = cue.phase === 'notice' ? 'curious' : cue.id ? reactions[cue.id] : 'idle';
   const dishes = MENU_ITEMS.filter(dish => category === 'All' || dish.category === category);
@@ -73,8 +75,13 @@ export function FoodExplorer({ open, showHost }: Props) {
                       : `${dish.image.replace('.webp', '-480.webp')} 480w, ${dish.image} 900w`}
                     sizes="(max-width: 700px) 65vw, (max-width: 1200px) 45vw, 620px"
                     alt="" loading="lazy" decoding="async" />
-                  {cue.phase === 'react' && cue.id === dish.id && <motion.img className="card-host-reaction"
-                    src={mascotImage(expression)} alt="" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} />}
+                  {cue.phase === 'react' && cue.id === dish.id && (
+                    <>
+                      <span className="dish-sparkles" aria-hidden="true"><span /><span /><span /><span /></span>
+                      <motion.img className="card-host-reaction"
+                        src={mascotImage(expression)} alt="" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} />
+                    </>
+                  )}
                 </motion.div>
                 <div className="dish-label"><div><span>{dish.category}</span><h3>{dish.name}</h3></div><ArrowUpRight size={24} aria-hidden /></div>
               </motion.button>
@@ -82,6 +89,11 @@ export function FoodExplorer({ open, showHost }: Props) {
           </AnimatePresence>
         </div>}
       </div>
+      <AnimatePresence>
+        {showHost && view === 'grid' && inMenu && !reduced && (
+          <FloatingHost active={inMenu} cue={cue} />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

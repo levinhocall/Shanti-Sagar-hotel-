@@ -88,6 +88,7 @@ function DishDetail({ dish, onClose, onChange }: { dish: DishItem; onClose: () =
 function GalleryDetail({ id, onClose, onChange }: { id: string; onClose: () => void; onChange: (panel: Panel) => void }) {
   const index = GALLERY_ITEMS.findIndex(item => item.id === id);
   const item = GALLERY_ITEMS[index];
+  if (!item) return null;
   const move = (step: number) => onChange({ kind: 'gallery', id: GALLERY_ITEMS[nextIndex(index, step, GALLERY_ITEMS.length)].id });
   const swipe = useSwipe(move);
   const reduced = useReducedMotion();
@@ -145,7 +146,7 @@ export function ExplorerDialog({ panel, onClose, onChange, onExit }: DialogProps
       }}>
         {panel && isOpen && <motion.div key="surface" className="dialog-surface" initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : .28 }}>
-          {dish ? <DishDetail key={dish.id} dish={dish} onClose={onClose} onChange={onChange} /> : <GalleryDetail id={panel.id} onChange={onChange} onClose={onClose} />}
+          {dish ? <DishDetail key={dish.id} dish={dish} onClose={onClose} onChange={onChange} /> : <GalleryDetail key={panel.id} id={panel.id} onChange={onChange} onClose={onClose} />}
         </motion.div>}
       </AnimatePresence>
     </dialog>

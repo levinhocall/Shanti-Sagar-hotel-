@@ -38,7 +38,7 @@ export function useExplorer() {
     history.replaceState(history.state, '', url); setPanel(null)
   }, [])
   const change = useCallback((next: Panel) => {
-    const url = new URL(location.href); url.searchParams.set(next.kind, next.id)
+    const url = new URL(location.href); url.searchParams.delete('dish'); url.searchParams.delete('gallery'); url.searchParams.set(next.kind, next.id)
     history.replaceState(history.state, '', url); setPanel(next)
   }, [])
   const restore = useCallback(() => {
