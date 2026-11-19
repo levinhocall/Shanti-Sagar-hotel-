@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { ArrowUpRight, Plant } from '@phosphor-icons/react';
 import { motion, useReducedMotion } from 'motion/react';
 
@@ -7,7 +8,7 @@ const links = [
   ['Gallery', 'gallery'], ['Reviews', 'reviews'], ['Visit', 'location'],
 ];
 
-export function Navigation() {
+export function Navigation({ mascot }: { mascot?: ReactNode }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState('');
@@ -34,20 +35,22 @@ export function Navigation() {
   }, []);
 
   return (
-    <header className="site-header shell">
-      <a className="brand" href="#home">
-        <span className="brand-mark"><Plant size={23} aria-hidden /></span>
-        <span>Shanti Sagar <small>Pure Veg</small></span>
-      </a>
-      <nav className="desktop-nav" aria-label="Main navigation" data-mascot-reaction="curious">
-        {links.map(([label, id]) => <a key={id} href={`#${id}`} aria-current={current === id ? 'location' : undefined}>{label}</a>)}
-      </nav>
-      <a className="button button-small header-visit" href="#location" data-mascot-reaction="approval">Plan a visit <ArrowUpRight size={16} aria-hidden /></a>
-      <div className="header-mascot-slot" id="header-mascot-slot" />
-      <button data-mascot-reaction="curious" className="icon-button mobile-toggle" aria-label="Open navigation" aria-expanded={open} aria-controls="mobile-menu"
-        onClick={() => { dialog.current?.showModal(); setOpen(true); }}>
-        <span className="menu-glyph" aria-hidden><i /><i /></span>
-      </button>
+    <header className="site-masthead shell">
+      {mascot && <div className="masthead-mascot">{mascot}</div>}
+      <div className="site-header">
+        <a className="brand" href="#home">
+          <span className="brand-mark"><Plant size={23} aria-hidden /></span>
+          <span>Shanti Sagar <small>Pure Veg</small></span>
+        </a>
+        <nav className="desktop-nav" aria-label="Main navigation" data-mascot-reaction="curious">
+          {links.map(([label, id]) => <a key={id} href={`#${id}`} aria-current={current === id ? 'location' : undefined}>{label}</a>)}
+        </nav>
+        <a className="button button-small header-visit" href="#location" data-mascot-reaction="approval">Plan a visit <ArrowUpRight size={16} aria-hidden /></a>
+        <button data-mascot-reaction="curious" className="icon-button mobile-toggle" aria-label="Open navigation" aria-expanded={open} aria-controls="mobile-menu"
+          onClick={() => { dialog.current?.showModal(); setOpen(true); }}>
+          <span className="menu-glyph" aria-hidden><i /><i /></span>
+        </button>
+      </div>
       <dialog id="mobile-menu" className="menu-dialog" ref={dialog} aria-label="Navigation menu" onClose={() => setOpen(false)}>
         <div className="menu-dialog-head">
           <span>Shanti Sagar Pure Veg</span>

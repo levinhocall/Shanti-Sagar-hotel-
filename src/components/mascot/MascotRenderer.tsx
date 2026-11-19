@@ -7,7 +7,6 @@ import { isMascotPoseLoaded, loadMascotPose, mascotImage } from './mascot-expres
 
 type Props = {
   expression: MascotExpression;
-  place: 'hero' | 'header' | 'dock';
   visible: boolean;
   gazeX: MotionValue<number>;
   gazeY: MotionValue<number>;
@@ -22,12 +21,12 @@ const poses: Record<MascotExpression, { scale: number; rotate: number; y: number
   approval: { scale: 1.015, rotate: -2, y: -2 },
 };
 
-export function MascotRenderer({ expression, place, visible, gazeX, gazeY, tilt }: Props) {
+export function MascotRenderer({ expression, visible, gazeX, gazeY, tilt }: Props) {
   const reduced = useReducedMotion();
   const x = useSpring(gazeX, { stiffness: 140, damping: 21 });
   const y = useSpring(gazeY, { stiffness: 140, damping: 21 });
   const rotate = useSpring(tilt, { stiffness: 120, damping: 21 });
-  const pupilX = useTransform(x, [-6, 6], ['-0.38%', '0.65%']);
+  const pupilX = useTransform(x, [-6, 6], ['0.38%', '-0.65%']);
   const pupilY = useTransform(y, [-7, 7], ['-0.48%', '0.5%']);
   const [requestedGaze, setRequestedGaze] = useState(false);
   const [eyesReady, setEyesReady] = useState(false);
@@ -80,10 +79,10 @@ export function MascotRenderer({ expression, place, visible, gazeX, gazeY, tilt 
   const rendered = blink && pose === 'idle' ? 'blink' : pose;
   const motionPose = pose === 'blink' ? poses.idle : poses[pose];
   return (
-    <motion.button type="button" className={`mascot mascot--${place}`}
+    <motion.button type="button" className="mascot"
       aria-label="Say hello to the mascot" data-mascot-tap data-expression={expression}
       data-mascot-pose={rendered} data-mascot-status={idleStatus} data-animated={visible && !reduced && idleStatus === "ready"}
-      initial={reduced || place !== 'hero' ? false : { opacity: 0, scale: .91, y: 11 }}
+      initial={reduced ? false : { opacity: 0, scale: .91, y: -13 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 170, damping: 17 }}>
       <motion.span className="mascot-gaze" aria-hidden="true" style={reduced || !visible ? undefined : { x, y, rotate }}>

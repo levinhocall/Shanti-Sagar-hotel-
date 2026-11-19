@@ -1,7 +1,6 @@
 import { Component, lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useReducedMotion } from 'motion/react';
-import { InteractiveMascot } from '../mascot/InteractiveMascot';
 import type { Pose } from './puppet-rig';
 import './puppet.css';
 
@@ -21,7 +20,7 @@ function PuppetFallback({ reason }: { reason: string }) {
   </div>;
 }
 
-function PuppetPreview() {
+export function PuppetPreview() {
   const reduced = useReducedMotion();
   const diagnostics = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
@@ -66,7 +65,7 @@ function PuppetPreview() {
   </div>;
 }
 
-export function PuppetExperience() {
-  const testRig = new URLSearchParams(window.location.search).get('puppet') === 'rig-test';
-  return testRig ? <PuppetPreview /> : <InteractiveMascot />;
+export function isLocalPuppetRigTest() {
+  const local = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+  return local && new URLSearchParams(window.location.search).get('puppet') === 'rig-test';
 }

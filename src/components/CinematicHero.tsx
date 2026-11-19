@@ -34,7 +34,6 @@ export function CinematicHero() {
           <a className="text-link hero-visit" href="#location" data-mascot-reaction="approval">Find us <ArrowUpRight size={17} aria-hidden /></a>
         </div>
       </motion.div>
-      <div className="hero-mascot-slot" id="hero-mascot-slot" />
       <figure className="hero-photo">
         <motion.div className="hero-photo-layer" style={reduced ? undefined : { x: imageX, y: imageY, scale: imageScale }}>
           <FoodImage className="hero-food-image" src="/images/v4/paneer-960.webp"
