@@ -1,12 +1,4 @@
 import { expect, test } from '@playwright/test';
-import type { Locator } from '@playwright/test';
-
-function positionDish(dish: Locator) {
-  return dish.evaluate(element => window.scrollTo({
-    top: window.scrollY + element.getBoundingClientRect().top - innerHeight * .2,
-    behavior: 'instant',
-  }));
-}
 
 test('the editorial host notices a dish after scrolling, reacts, and clears when the visitor moves away', async ({ page }) => {
   const errors: string[] = [];
@@ -25,8 +17,21 @@ test('the editorial host notices a dish after scrolling, reacts, and clears when
   await expect(page.locator('.dish')).toHaveCount(1);
   await page.mouse.move(1, 1);
   const dish = page.getByRole('button', { name: /Paneer curry/ });
-  await positionDish(dish);
-  await expect(host).toHaveAttribute('data-host-phase', 'notice');
+  // Start a new viewport visit even if the card was briefly visible during filtering.
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await expect(dish).not.toBeInViewport();
+  await expect(host).toHaveAttribute('data-host-phase', 'idle');
+  await host.evaluate(element => {
+    const watcher = new MutationObserver(() => {
+      if (element.getAttribute('data-host-phase') !== 'notice') return;
+      element.setAttribute('data-test-noticed', 'true');
+      watcher.disconnect();
+    });
+    watcher.observe(element, { attributes: true, attributeFilter: ['data-host-phase'] });
+  });
+  await dish.evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
+  await expect(dish).toBeInViewport({ ratio: .85 });
+  await expect(host).toHaveAttribute('data-test-noticed', 'true');
   await expect(dish).toHaveAttribute('data-host-highlight', 'true');
   await expect(dish.locator('img[src$="approval.webp"]')).toBeVisible();
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
