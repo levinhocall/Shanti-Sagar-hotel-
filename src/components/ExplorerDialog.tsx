@@ -88,10 +88,10 @@ function DishDetail({ dish, onClose, onChange }: { dish: DishItem; onClose: () =
 function GalleryDetail({ id, onClose, onChange }: { id: string; onClose: () => void; onChange: (panel: Panel) => void }) {
   const index = GALLERY_ITEMS.findIndex(item => item.id === id);
   const item = GALLERY_ITEMS[index];
-  if (!item) return null;
   const move = (step: number) => onChange({ kind: 'gallery', id: GALLERY_ITEMS[nextIndex(index, step, GALLERY_ITEMS.length)].id });
   const swipe = useSwipe(move);
   const reduced = useReducedMotion();
+  if (!item) return null;
 
   return (
     <div className="lightbox" {...swipe} onKeyDown={event => {
