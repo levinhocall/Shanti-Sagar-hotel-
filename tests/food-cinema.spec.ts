@@ -26,14 +26,20 @@ test('the art of the plate scrolls through in both directions without pinning or
   await expect(scene.locator('.food-study-photo')).not.toHaveCSS('position', 'sticky')
   await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('')
   const position = () => scene.evaluate(element => element.getBoundingClientRect().top)
+  const scroll = (distance: number) => {
+    if (isMobile && browserName === 'chromium') return mobileSwipe(page, distance)
+    // Playwright's mobile WebKit backend exposes neither wheel nor continuous touch input.
+    if (isMobile && browserName === 'webkit') {
+      return page.evaluate(top => window.scrollBy({ top, behavior: 'instant' }), distance)
+    }
+    return page.mouse.wheel(0, distance)
+  }
   const before = await position()
-  if (isMobile && browserName === 'chromium') await mobileSwipe(page, 320)
-  else await page.mouse.wheel(0, 360)
+  await scroll(320)
   await expect.poll(position).toBeLessThan(before - 150)
   expect(await page.evaluate(() => document.querySelectorAll('dialog[open]').length)).toBe(0)
   const down = await position()
-  if (isMobile && browserName === 'chromium') await mobileSwipe(page, -285)
-  else await page.mouse.wheel(0, -360)
+  await scroll(-285)
   await expect.poll(position).toBeGreaterThan(down + 100)
   await expect(scene.getByRole('link', { name: 'Explore dishes' })).toBeVisible()
   expect(frames).toEqual([])
