@@ -6,7 +6,7 @@ export function Footer() {
       <div className="shell">
         <div className="footer-top">
           <a className="brand" href="#home"><span className="brand-mark"><Plant size={23} aria-hidden /></span><span>Shanti Sagar<small>Pure Veg</small></span></a>
-          <nav aria-label="Footer navigation"><a href="#menu">Sample menu</a><a href="#gallery">Gallery</a><a href="#location">Visit & contact</a></nav>
+          <nav aria-label="Footer navigation"><a href="#menu">Sample menu</a><a href="#gallery">Gallery</a><a href="#location">Visit & contact</a><a href="/licenses/food-photography.html">Photography credits</a></nav>
           <a className="text-link" href="#home">Back to top <ArrowUp size={18} aria-hidden /></a>
         </div>
         <p className="footer-title" aria-hidden>Shanti Sagar</p>

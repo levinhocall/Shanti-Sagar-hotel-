@@ -11,7 +11,6 @@ import { ReviewsAndRatings } from './components/ReviewsAndRatings';
 import { LocationAndContact } from './components/LocationAndContact';
 import { Footer } from './components/Footer';
 import { ExplorerDialog } from './components/ExplorerDialog';
-import { InteractiveMascot } from './components/mascot/InteractiveMascot';
 import { isLocalPuppetRigTest, PuppetPreview } from './components/puppet/PuppetExperience';
 import { useExplorer } from './hooks/use-explorer';
 
@@ -23,12 +22,12 @@ export default function App() {
       <LayoutGroup id="shanti-sagar">
         <a className="skip-link" href="#main">Skip to content</a>
         <div className="concept-banner">Unofficial website concept</div>
-        <Navigation mascot={rigTest ? undefined : <InteractiveMascot />} />
+        <Navigation />
         <main id="main" tabIndex={-1} data-design-version="cinematic-v4">
           <CinematicHero />
           <FoodCinematicScroll />
-          <FoodExplorer open={explorer.open} />
-          <TableExperience />
+          <FoodExplorer open={explorer.open} showHost={!rigTest} />
+          <TableExperience open={explorer.open} />
           <RestaurantStory />
           <DiningFacilities />
           <GalleryLightbox open={explorer.open} />

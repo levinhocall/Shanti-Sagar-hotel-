@@ -6,7 +6,7 @@ const lines = ['Good food brings', 'everyone to the table.'];
 const steps = [
   { title: 'Start with something crisp', content: 'Explore the contrast of crisp dosa, soft idli and warm sambar in our sample menu.', image: 'dosa-900.webp', alt: 'Illustrative photo of idli with sambar and coconut chutney' },
   { title: 'Make room for something rich', content: 'From paneer curry to fragrant rice, the Food Explorer pairs familiar flavours with a closer look.', image: 'paneer-900.webp', alt: 'Illustrative photo of paneer curry' },
-  { title: 'Pass a plate around', content: 'The 3D table imagines a thali built for sharing, with every bowl and bite in its place.', image: 'feast-900.webp', alt: 'Illustrative photo of a shared thali' },
+  { title: 'Pass a plate around', content: 'A thali brings bread, rice and small servings together on one plate.', image: 'feast-900.webp', alt: 'Illustrative photo of a shared thali' },
 ];
 
 function StoryPhoto({ step, index, progress }: { step: typeof steps[number]; index: number; progress: MotionValue<number> }) {
@@ -34,7 +34,7 @@ export function RestaurantStory() {
         <motion.h2 id="story-heading" className="story-tagline" initial={reduced ? false : 'muted'} whileInView="shown" viewport={{ once: true, amount: .6 }}>
           {lines.map((line, lineIndex) => <span className="story-line" key={line}>{lineIndex > 0 && ' '}{line.split(' ').map(word => {
             const delay = delayIndex++ * .078;
-            return <motion.span key={word} variants={{ muted: { opacity: .35 }, shown: { opacity: 1, transition: { delay: reduced ? 0 : delay, duration: .34 } } }}>{word}{' '}</motion.span>;
+            return <motion.span key={word} variants={{ muted: { opacity: .7 }, shown: { opacity: 1, transition: { delay: reduced ? 0 : delay, duration: .34 } } }}>{word}{' '}</motion.span>;
           })}</span>)}
         </motion.h2>
         <div className="scroll-story" ref={story}>
@@ -43,8 +43,8 @@ export function RestaurantStory() {
             <figcaption>Illustrative food photography</figcaption>
           </figure>}
           <div className={reduced ? 'story-steps story-static' : 'story-steps'}>
-            {steps.map(step => <motion.article key={step.title} initial={reduced ? false : { opacity: .55, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .35 }} transition={{ duration: reduced ? 0 : .65 }}>
+            {steps.map(step => <motion.article key={step.title} initial={reduced ? false : { y: 16 }}
+              whileInView={{ y: 0 }} viewport={{ once: true, amount: .35 }} transition={{ duration: reduced ? 0 : .65 }}>
               <figure className="story-inline-photo">
                 <FoodImage src={`/images/${step.image}`} alt={step.alt} loading="lazy" decoding="async" />
                 <figcaption>Illustrative food photography</figcaption>

@@ -10,8 +10,8 @@ test.afterEach(async ({ page }) => { expect(errors.get(page)).toEqual([]) })
 test('hero, navigation, local images and responsive layout', async ({ page }, info) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Pure vegetarian\.\s*Pure happiness\./)
   await page.evaluate(() => document.fonts.ready)
-  await expect(page.getByRole('img', { name: /Illustrative paneer curry/ })).toBeVisible()
-  await expect.poll(() => page.getByRole('img', { name: /Illustrative paneer curry/ }).evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
+  await expect(page.getByRole('img', { name: /Illustrative masala dosa/ })).toBeVisible()
+  await expect.poll(() => page.getByRole('img', { name: /Illustrative masala dosa/ }).evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
   expect(await page.evaluate(() => innerWidth)).toBeLessThanOrEqual(info.project.name === 'desktop' ? 1440 : 413)
   if (info.project.name !== 'desktop') {
@@ -22,7 +22,7 @@ test('hero, navigation, local images and responsive layout', async ({ page }, in
     await expect(page).toHaveURL(/#menu/)
     await page.goto('/')
   }
-  await page.getByRole('img', { name: /Illustrative paneer curry/ }).evaluate((image: HTMLImageElement) => image.decode())
+  await page.getByRole('img', { name: /Illustrative masala dosa/ }).evaluate((image: HTMLImageElement) => image.decode())
   await expect(page.locator('.hero-copy')).toHaveCSS('opacity', '1')
   await page.screenshot({ path: `test-results/preview-${info.project.name}.png` })
 })
@@ -108,7 +108,7 @@ test('public contact links use verified listings and the map loads on request', 
 test('failed images retain a useful accessible fallback', async ({ page }) => {
   await page.route('**/images/**', route => route.abort())
   await page.reload()
-  await expect(page.getByRole('img', { name: /Illustrative paneer curry/ })).toContainText('Image unavailable')
+  await expect(page.getByRole('img', { name: /Illustrative masala dosa/ })).toContainText('Image unavailable')
 })
 test('3D is opt-in, loads on demand and can return to still life', async ({ page }, info) => {
   test.skip(info.project.name === 'iphone-webkit', 'Successful rendering is tested in Chromium; WebKit uses a separate fallback smoke test.')

@@ -5,6 +5,7 @@ export const RESTAURANT_INFO = {
   address: 'Maharishi Complex, Camp Road, Ulhasnagar, Thane 421005',
   phone: '+912512527778',
   phoneLabel: '+91 251 252 7778',
+  phoneSource: 'https://www.onefivenine.com/india/Listing/Locality/restaurants/Thane/Ulhasnagar/Kurla-Camp-Road',
   zomato: 'https://www.zomato.com/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane',
   orderUrl: 'https://www.zomato.com/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane/order',
   district: 'https://www.district.in/dining/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane',
@@ -27,8 +28,8 @@ export const MENU_ITEMS: DishItem[] = [
     image: '/images/masala-dosa-concept.webp',
     subtitle: 'Golden crispness with spiced potato warmth.',
     description: 'Thin, crispy crepe roasted on a hot flat-top seasoned cast iron tawa until bronzed and crisp, wrapped around gently spiced turmeric potato masala, served with aromatic piping hot sambar.',
-    conceptVisual: { card: '/images/v4/dosa-600.webp', large: '/images/v4/dosa-960.webp', alt: 'Golden dosa with three accompaniments' },
-    gallery: ['/images/v4/dosa-960.webp', '/images/masala-dosa-concept.webp', '/images/feast.webp'],
+    visual: { card: '/images/editorial/masala-dosa-480.webp', large: '/images/editorial/masala-dosa-900.webp', alt: 'Golden dosa with sambar and chutneys' },
+    gallery: ['/images/editorial/masala-dosa-900.webp', '/images/masala-dosa-concept.webp', '/images/feast.webp'],
   },
   {
     id: 'paneer-curry',
@@ -37,8 +38,8 @@ export const MENU_ITEMS: DishItem[] = [
     image: '/images/paneer.webp',
     subtitle: 'Rich colour. Quiet indulgence.',
     description: 'Tender cottage cheese cubes simmered in a luscious tomato and cashew silk gravy, infused with roasted kasuri methi and fragrant whole spices. A celebrated staple of North Indian vegetarian dining.',
-    conceptVisual: { card: '/images/v4/paneer-card.webp', large: '/images/v4/paneer-960.webp', alt: 'Paneer curry in hammered copper with naan' },
-    gallery: ['/images/v4/paneer-960.webp', '/images/paneer.webp', '/images/feast.webp'],
+    visual: { card: '/images/paneer-480.webp', large: '/images/paneer-900.webp', alt: 'Paneer curry with flatbread' },
+    gallery: ['/images/paneer-900.webp', '/images/v4/paneer-960.webp', '/images/feast.webp'],
   },
   {
     id: 'vegetable-biryani',
@@ -56,8 +57,8 @@ export const MENU_ITEMS: DishItem[] = [
     image: '/images/feast.webp',
     subtitle: 'The full spectrum of pure vegetarian abundance.',
     description: 'A curated multi-course culinary journey across regional vegetarian traditions: seasonal curries, dal tadka, hot rotis, fragrant rice, crisp papad, raita, and handcrafted sweet concluding bite.',
-    conceptVisual: { card: '/images/v4/thali-600.webp', large: '/images/v4/thali-960.webp', alt: 'Brass thali with rice and bowls of colourful accompaniments' },
-    gallery: ['/images/v4/thali-960.webp', '/images/feast.webp', '/images/paneer.webp', '/images/dosa.webp'],
+    visual: { card: '/images/editorial/vegetarian-thali-480.webp', large: '/images/editorial/vegetarian-thali-900.webp', alt: 'Vegetarian thali with rice and assorted sides' },
+    gallery: ['/images/editorial/vegetarian-thali-900.webp', '/images/feast.webp', '/images/paneer.webp', '/images/dosa.webp'],
   }
 ];
 
@@ -67,7 +68,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     src: '/images/feast.webp',
     title: 'The art of sharing',
     credit: 'Unsplash photo-1546833999-b9f581a1996d',
-    caption: 'Gathering around the vibrant colors of an shared vegetarian spread.'
+    caption: 'A vegetarian thali with curries and flatbread.'
   },
   {
     id: 'dosa',

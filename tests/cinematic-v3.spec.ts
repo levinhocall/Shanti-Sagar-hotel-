@@ -19,7 +19,7 @@ test('3D JavaScript is absent from initial loading and WebP imagery resolves', a
   const threeRequests: string[] = []
   page.on('request', request => { if (/\/(three-core|three-renderer|ThreeCanvas)-/.test(request.url())) threeRequests.push(request.url()) })
   await page.goto('/')
-  const hero = page.getByRole('img', { name: /Illustrative paneer curry/ })
+  const hero = page.getByRole('img', { name: /Illustrative masala dosa/ })
   await expect.poll(() => hero.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
   expect(await hero.evaluate((image: HTMLImageElement) => image.currentSrc)).toMatch(/\.webp$/)
   await page.getByRole('heading', { name: /A seat at the table/ }).scrollIntoViewIfNeeded()
@@ -35,7 +35,7 @@ test('scroll story completes its reveal and reduced motion shows readable text i
   await expect(page.locator('html')).toHaveCSS('scroll-behavior', 'auto')
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.reload()
-  await expect(word).toHaveCSS('opacity', '0.35')
+  await expect(word).toHaveCSS('opacity', '0.7')
   await page.locator('.story-tagline').scrollIntoViewIfNeeded()
   await expect(word).toHaveCSS('opacity', '1')
 })
