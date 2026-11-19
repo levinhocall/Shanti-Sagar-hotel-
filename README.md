@@ -5,9 +5,10 @@
 This independent restaurant concept extends the React, TypeScript, Vite and
 Tailwind project on main. The food explorer, gallery, still life and visit
 sections are usable without WebGL. The optional 3D thali uses React Three Fiber
-and renders on demand using concept food textures. Motion handles card filtering, the shared dish image,
-the scroll reveal and pan feedback. The paneer study streams nearby frames from a 16-frame WebP sequence. The thali and dosa studies use scroll-linked stills. Pinned desktop story imagery uses CSS
-sticky positioning and the page uses native scrolling.
+and renders on demand using concept food textures. Motion handles card filtering,
+the shared dish image, story reveals, and pan feedback. The Art of the Plate
+uses native scrolling, photo parallax, and chapter controls. The reference-based
+illustrated host responds to grid-card dwell and keyboard focus.
 
 ## Build and verify
 
@@ -36,17 +37,20 @@ Source sections are in `src/components/`, business data in
 ## Public listings and sample content
 
 [Zomato](https://www.zomato.com/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane)
-lists the restaurant’s Camp Road address, cuisine categories and telephone.
+lists the restaurant’s Camp Road address and cuisine categories.
 [District](https://www.district.in/dining/mumbai/shanti-sagar-pure-veg-ulhasnagar-thane)
 corroborates the location and provides a live destination for posted hours.
 The map uses a Google Maps search and requests an embed only when activated.
 External listing links handle reviews and ordering. The demo does not process
-orders or collect contact details.
+orders or collect contact details. The public landline and alternate listing
+are documented in the [editorial audit](docs/editorial-audit.md).
 
-The hero, featured food stories and selected explorer and gallery images use AI concept images. See the [V4 asset manifest and shot specifications](docs/v4-food-assets.md). The stock food photography is illustrative,
-and the sample menu makes no official price, ingredient or allergen claims.
-See [asset credits](docs/ASSET-LICENSES.md). Replace sample food content with
-restaurant-approved material before presenting this as the official site.
+The hero, featured food stories, and dining table use illustrative Wikimedia
+Commons and Unsplash photography. Selected secondary gallery images and
+3D food textures use clearly disclosed AI concept art. See the
+[asset credits](docs/ASSET-LICENSES.md) and
+[concept art manifest and shot specifications](docs/v4-food-assets.md).
+The sample menu makes no official price, ingredient or allergen claims.
 
 ## Cloudflare release verification
 

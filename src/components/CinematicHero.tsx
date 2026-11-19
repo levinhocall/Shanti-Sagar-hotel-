@@ -36,13 +36,13 @@ export function CinematicHero() {
       </motion.div>
       <figure className="hero-photo">
         <motion.div className="hero-photo-layer" style={reduced ? undefined : { x: imageX, y: imageY, scale: imageScale }}>
-          <FoodImage className="hero-food-image" src="/images/v4/paneer-960.webp"
-            source={{ media: '(max-width: 700px)', srcSet: '/images/v4/paneer-mobile.webp' }}
-            srcSet="/images/v4/paneer-960.webp 960w, /images/v4/paneer-wide.webp 1600w"
-            sizes="100vw" alt="Illustrative paneer curry in a copper bowl with naan"
+          <FoodImage className="hero-food-image" src="/images/editorial/masala-dosa-900.webp"
+            source={{ media: '(max-width: 700px)', srcSet: '/images/editorial/masala-dosa-480.webp 480w, /images/editorial/masala-dosa-900.webp 900w', sizes: '100vw' }}
+            srcSet="/images/editorial/masala-dosa-900.webp 900w, /images/editorial/masala-dosa-1280.webp 1280w"
+            sizes="60vw" alt="Illustrative masala dosa with sambar and chutneys"
             fetchPriority="high" />
         </motion.div>
-        <figcaption>AI concept image</figcaption>
+        <figcaption>Masala dosa · Illustrative photography</figcaption>
       </figure>
     </section>
   );

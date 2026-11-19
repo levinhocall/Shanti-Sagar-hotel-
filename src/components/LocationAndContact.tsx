@@ -20,7 +20,7 @@ export function LocationAndContact() {
               <a className="text-link" href={RESTAURANT_INFO.district} target="_blank" rel="noreferrer">Check hours on District <ArrowUpRight size={16} aria-hidden /></a>
               <a className="text-link" href={RESTAURANT_INFO.orderUrl} target="_blank" rel="noreferrer">Order on Zomato <ArrowUpRight size={16} aria-hidden /></a>
             </div>
-            <p className="visit-source">Address and phone are from public listings. Check opening hours before visiting.</p>
+            <p className="visit-source"><a className="visit-evidence" href={RESTAURANT_INFO.phoneSource} target="_blank" rel="noreferrer">Public landline listing</a>. Check opening hours before visiting.</p>
           </div>
           <div className="map-stage">
             {showMap ? <iframe title="Google Maps search for Shanti Sagar Pure Veg in Ulhasnagar"

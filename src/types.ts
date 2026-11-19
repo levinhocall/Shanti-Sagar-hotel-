@@ -6,7 +6,7 @@ export interface DishItem {
   subtitle: string;
   description: string;
   gallery: string[];
-  conceptVisual?: { card: string; large: string; alt: string };
+  visual?: { card: string; large: string; alt: string };
 }
 
 export interface GalleryItem {

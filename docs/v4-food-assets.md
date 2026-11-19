@@ -1,14 +1,14 @@
 # Shanti Sagar V4 concept art
 
-Images used by the V4 site are AI-generated concept imagery. They illustrate general vegetarian dishes and were not photographed at the restaurant. Check the current menu with the restaurant before publishing a dish as an official offering.
+This inventory records original AI concept imagery from the V4 production work. The current hero and dining journal use illustrative photography documented in the [asset credits](ASSET-LICENSES.md). Concept assets depict general vegetarian dishes created for this demo.
 
 | Art direction | Published assets under `public/images/v4` | Website use |
 | --- | --- | --- |
-| Royal Paneer | `paneer-wide.webp` (1600 × 900), `paneer-960.webp` (960 × 540), `paneer-mobile.webp` (540 × 960), `paneer-card.webp` (480 × 600) | Desktop and portrait hero, explorer, poster |
-| Grand Thali | `thali-960.webp`, `thali-600.webp` | Story poster, explorer and 3D fallback |
-| Golden Dosa | `dosa-960.webp`, `dosa-600.webp` | Story poster and explorer |
-| North Indian feast | `feast-960.webp`, `feast-600.webp` | Gallery |
-| Paneer scroll loop source | `paneer-frames/001.webp` through `016.webp` (960 × 540) | Exposure reveal, selective spotlight and camera push layered from a single still |
+| Royal Paneer | `paneer-wide.webp` (1600 × 900), `paneer-960.webp` (960 × 540), `paneer-mobile.webp` (540 × 960), `paneer-card.webp` (480 × 600) | Concept sources and dish detail gallery |
+| Grand Thali | `thali-960.webp`, `thali-600.webp` | Concept sources and dish detail gallery |
+| Golden Dosa | `dosa-960.webp`, `dosa-600.webp` | Concept sources and dish detail gallery |
+| North Indian feast | `feast-960.webp`, `feast-600.webp` | Concept gallery |
+| Paneer scroll loop source | `paneer-frames/001.webp` through `016.webp` (960 × 540) | Archived exposure layers from a single still |
 | Dining model materials | `table-paneer.webp`, `table-dal.webp`, `table-rice.webp`, `table-naan.webp` (256 × 256) | Crops of an AI-generated food texture atlas applied to 3D serving geometry |
 
 ## Still-image prompts
@@ -23,7 +23,7 @@ Use realistic high-end food editorial photography. Leave branding and typography
 
 ## Video shot specifications for a future render
 
-Keep exact plate placement and ingredient continuity between shots. Use 5–6 seconds per shot, 24 fps, no artificial deformation. For web video, render H.264 MP4 and WebM with a WebP poster, muted inline playback, and no autoplay for users with reduced motion. For scroll playback, export at most 120 WebP frames per sequence. Number them `001.webp` onward at a consistent resolution and configure `frameSequence` in `src/data/foodStories.ts`. Use 960 × 540 where a landscape composition supplies sufficient mobile crop room. Add a separate portrait poster. Use an isolated alpha cutout only for separately filmed ingredients that need independent composition.
+Keep exact plate placement and ingredient continuity between shots. Use 5–6 seconds per shot at 24 fps. For web video, render H.264 MP4 and WebM with a WebP poster and muted inline playback. Respect reduced-motion settings when deciding whether to autoplay. Add a separate portrait poster where the landscape crop loses the subject. Use an isolated alpha cutout for separately filmed ingredients that need independent composition.
 
 | Sequence | Shot direction |
 | --- | --- |
@@ -31,4 +31,4 @@ Keep exact plate placement and ingredient continuity between shots. Use 5–6 se
 | Thali | Start with an empty tabletop at three-quarter height. Move a polished tray in first, then reveal individual bowls and rice in timed succession. Rise smoothly to directly overhead and hold on the full arrangement. |
 | Dosa | Open on warm spill across a dark tabletop. Slide in a crisp dosa and stage sambar and chutneys one by one. Add subtle steam and a short lateral move over the textured shell. Settle on a composed three-quarter view. |
 
-The published implementation uses the 16-frame paneer reveal and scroll-linked 2.5D views for thali and dosa. The full ingredient-assembly videos and alpha cutout are future assets.
+The published dining journal uses photographs, native scroll parallax and chapter controls. The full ingredient-assembly videos and alpha cutout are future assets.

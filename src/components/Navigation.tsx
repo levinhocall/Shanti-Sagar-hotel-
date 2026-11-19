@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
 import { ArrowUpRight, Plant } from '@phosphor-icons/react';
 import { motion, useReducedMotion } from 'motion/react';
 
@@ -8,7 +7,7 @@ const links = [
   ['Gallery', 'gallery'], ['Reviews', 'reviews'], ['Visit', 'location'],
 ];
 
-export function Navigation({ mascot }: { mascot?: ReactNode }) {
+export function Navigation() {
   const dialog = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState('');
@@ -36,7 +35,6 @@ export function Navigation({ mascot }: { mascot?: ReactNode }) {
 
   return (
     <header className="site-masthead shell">
-      {mascot && <div className="masthead-mascot">{mascot}</div>}
       <div className="site-header">
         <a className="brand" href="#home">
           <span className="brand-mark"><Plant size={23} aria-hidden /></span>

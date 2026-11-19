@@ -34,3 +34,14 @@ encodes of AI-generated images made for this demo. The interface labels the
 food imagery and the procedural 3D table as illustrative. V3 uses the bundled
 Manrope variable font under the existing SIL Open Font License. Phosphor icons
 and the existing sample photography retain their respective licenses.
+
+## Editorial update
+
+- `public/images/editorial/masala-dosa-*.webp` derives from
+  [Masala Dosa mit Sambar und Chutneys](https://commons.wikimedia.org/wiki/File:Masala_Dosa_mit_Sambar_und_Chutneys.jpg)
+  by Wischmann.
+- `public/images/editorial/vegetarian-thali-*.webp` derives from
+  [Vegetarian Thali](https://commons.wikimedia.org/wiki/File:Vegetarian_Thali.jpg)
+  by PrashuKalyan.
+
+Both families were resized, lightly desaturated and converted to WebP, and layout can crop them. The derivatives are distributed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Public attribution is linked in the site footer.

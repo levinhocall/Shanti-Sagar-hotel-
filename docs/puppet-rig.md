@@ -1,6 +1,6 @@
 # Puppet rig verification
 
-The public site shows the supplied character's 2.5D portraits in a centered row above the navigation. Public links with the old rig-test query show the same character. The repository has no character mesh, skin, rigged GLB, or face morphs matching that character. The rendering test uses an unskinned technical rig with articulated Three.js bones and an index endpoint. It is separate from the homepage presenter.
+The public site shows the supplied character's 2.5D portraits in the Food Explorer. Grid cards can trigger a portrait reaction after a short dwell. Public links with the old rig-test query show the same character. The repository has no character mesh, skin, rigged GLB, or face morphs matching that character. The rendering test uses an unskinned technical rig with articulated Three.js bones and an index endpoint. It is separate from the public illustrated host.
 
 From a local development or preview server, open `/?puppet=rig-test` to inspect entrance timing, scene travel, pointing, visible dish contact, two-hand presentation on hover or keyboard focus, and pointing toward Get directions. Scroll until a menu card is visible and pause to run the contact sequence. The test display shows a static smile when reduced motion is enabled, WebGL fails, or the visitor turns on the separate 3D dining table.
 

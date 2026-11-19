@@ -1,206 +1,118 @@
 import { useEffect, useState } from 'react';
-import { useMotionValue } from 'motion/react';
-import type { MascotExpression } from './mascot-expressions';
+import type { RefObject } from 'react';
 
-const SCROLL_END_MS = 780;
-const SECTION_REPLAY_MS = 5400;
-const SURPRISE_MS = 1400;
-const TAP_MS = 1000;
+const DWELL_MS = 850;
+const CARD = '.dish[data-dish-id]';
+type DishCue = { phase: 'idle' | 'notice' | 'react'; id: string | null };
+const idle: DishCue = { phase: 'idle', id: null };
 
-type Reaction = 'curious' | 'happy' | 'approval';
-
-function readReaction(node: EventTarget | null): HTMLElement | null {
-  return node instanceof Element ? node.closest<HTMLElement>('[data-mascot-reaction]') : null;
-}
-
-function reactionOf(node: HTMLElement | null): Reaction | null {
-  const value = node?.dataset.mascotReaction;
-  return value === 'happy' || value === 'approval' || value === 'curious' ? value : null;
-}
-
-function sectionMood(id: string) {
-  if (id === 'location') return 'approval';
-  if (id === 'menu' || id === 'experience' || id === 'food-stories') return 'happy';
-  return 'idle';
-}
-
-export function useMascotController() {
-  const [expression, setExpression] = useState<MascotExpression>('idle');
-  const [visible, setVisible] = useState(() => !document.hidden);
-  const gazeX = useMotionValue(0);
-  const gazeY = useMotionValue(0);
-  const tilt = useMotionValue(0);
+export function useMascotController(root: RefObject<HTMLElement>, view: string, category: string, enabled: boolean) {
+  const [cue, setCue] = useState<DishCue>(idle);
 
   useEffect(() => {
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-    const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section'));
-    const entries = new Set<HTMLElement>();
-    const lastReaction = new Map<HTMLElement, number>();
-    let section: HTMLElement | undefined;
-    let sectionTimer = 0;
-    let scrollTimer = 0;
-    let tapTimer = 0;
-    let frame = 0;
-    let pointerMood: Reaction | null = null;
-    let focusMood: Reaction | null = null;
-    let surprised = false;
-    let tapped = false;
-    let scrolling = false;
-    let lastY = window.scrollY;
-    let lastScroll = performance.now();
+    setCue(idle);
+    const section = root.current;
+    if (!section || !enabled || !window.IntersectionObserver) return;
+    const cards = Array.from(section.querySelectorAll<HTMLElement>(CARD))
+      .filter(card => category === 'All' || card.dataset.dishCategory === category);
+    const displayed = new Set(cards);
+    const ratios = new Map<HTMLElement, number>();
+    let current: HTMLElement | null = null;
+    let pinned: HTMLElement | null = null;
+    let dwell = 0;
+    let restart = 0;
+    let release = 0;
+    let moving = false;
+    const reacted = new WeakSet<HTMLElement>();
 
-    function publish() {
-      if (document.hidden) return;
-      let next: MascotExpression = sectionMood(section?.id ?? '');
-      if (scrolling && next === 'idle') next = 'curious';
-      if (surprised) next = 'surprised';
-      if (focusMood) next = focusMood;
-      if (pointerMood) next = pointerMood;
-      if (tapped) next = 'happy';
-      setExpression(next);
+    function cancel() {
+      window.clearTimeout(dwell);
+      window.clearTimeout(release);
+      current = null;
+      setCue(idle);
     }
 
-    const sectionsObserver = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(observed => {
-      for (const entry of observed) {
-        const target = entry.target as HTMLElement;
-        if (entry.isIntersecting) entries.add(target);
-        else entries.delete(target);
-      }
-      if (entries.size === 0) return;
-      const line = window.innerHeight * .43;
-      const next = sections.find(item => {
-        if (!entries.has(item)) return false;
-        const rect = item.getBoundingClientRect();
-        return rect.top <= line && rect.bottom >= line;
-      }) ?? entries.values().next().value;
-      if (!next || section === next) return;
-      const previous = section;
-      section = next;
-      window.clearTimeout(sectionTimer);
-      const now = performance.now();
-      const last = lastReaction.get(next);
-      surprised = Boolean(previous && next.id !== 'home' && (last === undefined || now - last > SECTION_REPLAY_MS));
-      if (surprised) {
-        lastReaction.set(next, now);
-        sectionTimer = window.setTimeout(() => { surprised = false; publish(); }, SURPRISE_MS);
-      }
-      publish();
-    }, { rootMargin: '-42% 0px -56% 0px' });
-    sections.forEach(element => sectionsObserver?.observe(element));
-
-    function centerGaze() {
-      gazeX.set(0);
-      gazeY.set(0);
-      tilt.set(0);
+    function choose(card: HTMLElement | null) {
+      if (card === current) return;
+      cancel();
+      const id = card?.dataset.dishId;
+      if (!card || !id || document.hidden || reacted.has(card)) return;
+      current = card;
+      setCue({ phase: 'notice', id });
+      dwell = window.setTimeout(() => {
+        if (current !== card || !card.isConnected) return;
+        reacted.add(card);
+        setCue({ phase: 'react', id });
+        release = window.setTimeout(cancel, 1800);
+      }, DWELL_MS);
     }
 
+    function fromViewport() {
+      if (moving || document.hidden) return;
+      if (pinned) { choose(pinned); return; }
+      const candidates = cards.filter(card => card.isConnected && (ratios.get(card) ?? 0) >= .65);
+      choose(candidates.find(card => !reacted.has(card)) ?? null);
+    }
+
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        const card = entry.target as HTMLElement;
+        ratios.set(card, entry.intersectionRatio);
+        if (!entry.isIntersecting) reacted.delete(card);
+      }
+      fromViewport();
+    }, { rootMargin: '-70px 0px 0px', threshold: [0, .65] });
+    cards.forEach(card => observer.observe(card));
+
+    function target(node: EventTarget | null) {
+      return node instanceof Element ? node.closest<HTMLElement>(CARD) : null;
+    }
+
+    function onEnter(event: PointerEvent | FocusEvent) {
+      if ('pointerType' in event && event.pointerType !== 'mouse') return;
+      if (event.type === 'focusin' && !(event.target instanceof Element && event.target.matches(':focus-visible'))) return;
+      const card = target(event.target);
+      if (!card || !displayed.has(card) || target(event.relatedTarget) === card) return;
+      reacted.delete(card);
+      pinned = card;
+      choose(card);
+    }
+    function onLeave(event: PointerEvent | FocusEvent) {
+      if ('pointerType' in event && event.pointerType !== 'mouse') return;
+      const card = target(event.target);
+      if (!card || target(event.relatedTarget) === card || pinned !== card) return;
+      pinned = null;
+      cancel();
+    }
     function onScroll() {
-      if (frame || document.hidden) return;
-      frame = requestAnimationFrame(now => {
-        frame = 0;
-        const y = window.scrollY;
-        const delta = y - lastY;
-        const elapsed = Math.max(16, now - lastScroll);
-        lastY = y;
-        lastScroll = now;
-        if (Math.abs(delta) < 2) return;
-        if (!reduced.matches) {
-          const intensity = Math.min(1, Math.abs(delta / elapsed) / .8);
-          gazeY.set(Math.sign(delta) * (2 + intensity * 5));
-          tilt.set(Math.sign(delta) * intensity * 2);
-        }
-        if (!scrolling) { scrolling = true; publish(); }
-        window.clearTimeout(scrollTimer);
-        scrollTimer = window.setTimeout(() => {
-          scrolling = false;
-          centerGaze();
-          publish();
-        }, SCROLL_END_MS);
-      });
+      if (!moving) cancel();
+      moving = true;
+      pinned = null;
+      window.clearTimeout(restart);
+      restart = window.setTimeout(() => { moving = false; fromViewport(); }, 125);
     }
-
-    function onPointerMove(event: PointerEvent) {
-      if (event.pointerType !== 'mouse' || reduced.matches || document.hidden) return;
-      const x = event.clientX / window.innerWidth - .5;
-      const y = event.clientY / window.innerHeight - .5;
-      gazeX.set(x * 12);
-      gazeY.set(y * 8);
-      tilt.set(x * 4);
-    }
-
-    function onPointerOver(event: PointerEvent) {
-      if (event.pointerType !== 'mouse') return;
-      const next = reactionOf(readReaction(event.target));
-      if (pointerMood === next) return;
-      pointerMood = next;
-      publish();
-    }
-
-    function onPointerOut(event: PointerEvent) {
-      if (event.pointerType !== 'mouse') return;
-      const next = reactionOf(readReaction(event.relatedTarget));
-      if (pointerMood !== next) { pointerMood = next; publish(); }
-      if (!event.relatedTarget) centerGaze();
-    }
-
-    function onFocus(event: FocusEvent) {
-      const target = event.type === 'focusin' ? event.target : event.relatedTarget;
-      // Mouse and touch focus should not leave a hover reaction pinned after scrolling.
-      const control = readReaction(target);
-      focusMood = control?.matches(':focus-visible') || (target instanceof Element && target.matches(':focus-visible'))
-        ? reactionOf(control) : null;
-      publish();
-    }
-
-    function onClick(event: MouseEvent) {
-      if (!(event.target instanceof Element) || !event.target.closest('[data-mascot-tap]')) return;
-      tapped = true;
-      publish();
-      window.clearTimeout(tapTimer);
-      tapTimer = window.setTimeout(() => { tapped = false; publish(); }, TAP_MS);
-    }
-
-    function onVisibility() {
-      setVisible(!document.hidden);
-      lastY = window.scrollY;
-      if (document.hidden) {
-        cancelAnimationFrame(frame);
-        frame = 0;
-        window.clearTimeout(scrollTimer);
-        window.clearTimeout(sectionTimer);
-        window.clearTimeout(tapTimer);
-        scrolling = surprised = tapped = false;
-        pointerMood = focusMood = null;
-        centerGaze();
-      } else publish();
-    }
-
-    reduced.addEventListener('change', centerGaze);
-    document.addEventListener('visibilitychange', onVisibility);
+    function onVisibility() { if (document.hidden) cancel(); else fromViewport(); }
+    section.addEventListener('pointerover', onEnter);
+    section.addEventListener('pointerout', onLeave);
+    section.addEventListener('focusin', onEnter);
+    section.addEventListener('focusout', onLeave);
+    section.addEventListener('click', cancel);
     window.addEventListener('scroll', onScroll, { passive: true });
-    document.addEventListener('pointermove', onPointerMove, { passive: true });
-    document.addEventListener('pointerover', onPointerOver, { passive: true });
-    document.addEventListener('pointerout', onPointerOut, { passive: true });
-    document.addEventListener('focusin', onFocus);
-    document.addEventListener('focusout', onFocus);
-    document.addEventListener('click', onClick);
+    document.addEventListener('visibilitychange', onVisibility);
     return () => {
-      sectionsObserver?.disconnect();
-      reduced.removeEventListener('change', centerGaze);
-      document.removeEventListener('visibilitychange', onVisibility);
+      observer.disconnect();
+      window.clearTimeout(dwell);
+      window.clearTimeout(release);
+      window.clearTimeout(restart);
+      section.removeEventListener('pointerover', onEnter);
+      section.removeEventListener('pointerout', onLeave);
+      section.removeEventListener('focusin', onEnter);
+      section.removeEventListener('focusout', onLeave);
+      section.removeEventListener('click', cancel);
       window.removeEventListener('scroll', onScroll);
-      document.removeEventListener('pointermove', onPointerMove);
-      document.removeEventListener('pointerover', onPointerOver);
-      document.removeEventListener('pointerout', onPointerOut);
-      document.removeEventListener('focusin', onFocus);
-      document.removeEventListener('focusout', onFocus);
-      document.removeEventListener('click', onClick);
-      cancelAnimationFrame(frame);
-      window.clearTimeout(scrollTimer);
-      window.clearTimeout(sectionTimer);
-      window.clearTimeout(tapTimer);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [gazeX, gazeY, tilt]);
+  }, [root, view, category, enabled]);
 
-  return { expression, visible, gazeX, gazeY, tilt };
+  return cue;
 }

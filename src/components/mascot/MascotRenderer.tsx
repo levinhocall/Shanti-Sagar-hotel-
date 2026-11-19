@@ -8,6 +8,7 @@ import { isMascotPoseLoaded, loadMascotPose, mascotImage } from './mascot-expres
 type Props = {
   expression: MascotExpression;
   visible: boolean;
+  onHello: () => void;
   gazeX: MotionValue<number>;
   gazeY: MotionValue<number>;
   tilt: MotionValue<number>;
@@ -21,7 +22,7 @@ const poses: Record<MascotExpression, { scale: number; rotate: number; y: number
   approval: { scale: 1.015, rotate: -2, y: -2 },
 };
 
-export function MascotRenderer({ expression, visible, gazeX, gazeY, tilt }: Props) {
+export function MascotRenderer({ expression, visible, gazeX, gazeY, tilt, onHello }: Props) {
   const reduced = useReducedMotion();
   const x = useSpring(gazeX, { stiffness: 140, damping: 21 });
   const y = useSpring(gazeY, { stiffness: 140, damping: 21 });
@@ -80,7 +81,7 @@ export function MascotRenderer({ expression, visible, gazeX, gazeY, tilt }: Prop
   const motionPose = pose === 'blink' ? poses.idle : poses[pose];
   return (
     <motion.button type="button" className="mascot"
-      aria-label="Say hello to the mascot" data-mascot-tap data-expression={expression}
+      aria-label="Say hello to the mascot" onClick={onHello} data-expression={expression}
       data-mascot-pose={rendered} data-mascot-status={idleStatus} data-animated={visible && !reduced && idleStatus === "ready"}
       initial={reduced ? false : { opacity: 0, scale: .91, y: -13 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -91,7 +92,7 @@ export function MascotRenderer({ expression, visible, gazeX, gazeY, tilt }: Prop
             transition={reduced || !visible ? { duration: 0 } : { type: 'spring', stiffness: 245, damping: 21 }}>
             <span className="mascot-fallback"><Plant weight="duotone" /></span>
             <motion.img className="mascot-image mascot-base" src={mascotImage('idle')} alt="" width="384" height="384"
-              fetchPriority="low" draggable={false} hidden={idleStatus === 'failed'}
+              fetchPriority="low" loading="lazy" draggable={false} hidden={idleStatus === 'failed'}
               onLoad={() => setIdleStatus('ready')} onError={() => setIdleStatus('failed')}
               animate={{ opacity: rendered === 'idle' ? 1 : 0 }}
               transition={{ duration: reduced || !visible || rendered === 'blink' ? 0 : .16 }} />
