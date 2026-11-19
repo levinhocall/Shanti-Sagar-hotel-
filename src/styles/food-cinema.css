@@ -1,6 +1,6 @@
 .food-cinema { position: relative; background: #0e1a14; color: #fff4e1; }
 .food-cinema-track { height: 325svh; }
-.food-cinema-sticky { position: sticky; top: 86px; min-height: 430px; height: calc(100svh - 90px); isolation: isolate; }
+.food-cinema-sticky { position: sticky; top: calc(var(--masthead-clearance) - 12px); min-height: 430px; height: calc(100svh - var(--masthead-clearance)); isolation: isolate; }
 .food-cinema-art, .food-cinema-still, .food-cinema-light, .food-sequence-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .food-cinema-art { overflow: hidden; background: #17261c; z-index: -1; }
 .food-cinema-still picture, .food-cinema-still img { width: 100%; height: 100%; display: block; }
@@ -29,7 +29,7 @@
 .food-cinema-scroll { display: inline-flex; gap: 6px; align-items: center; font-size: .82rem; }
 .food-cinema-footer .text-link { font-size: .8rem; }
 @media (max-width: 700px) {
-  .food-cinema-sticky { top: 84px; height: calc(100svh - 88px); min-height: min(410px, 74svh); }
+  .food-cinema-sticky { min-height: min(410px, 74svh); }
   .food-cinema-track { height: 238svh; }
   .food-cinema-art::after { background: linear-gradient(0deg, #0a140ef5 0%, #0a140ebd 24%, #0a140e16 68%, #0a140ee8 100%); }
   .food-cinema-copy > .food-cinema-line { min-height: 2em; }
@@ -60,7 +60,7 @@
   align-items: center;
   position: relative;
   isolation: isolate;
-  min-height: min(860px, calc(100svh - 88px));
+  min-height: min(860px, calc(100svh - var(--masthead-clearance)));
   padding-block: clamp(42px, 12vh, 148px) clamp(45px, 7vh, 94px);
   background: #0b180f;
 }
@@ -106,7 +106,7 @@
 body:has(.hero-v4) .site-header { background: #101c15f3; }
 
 @media (max-width: 700px) {
-  .hero.hero-v4 { align-items: end; min-height: max(470px, calc(100svh - 76px)); padding-block: 165px 48px; }
+  .hero.hero-v4 { align-items: end; min-height: max(470px, calc(100svh - var(--masthead-clearance))); padding-block: 165px 48px; }
   .hero-v4 .hero-photo-layer { inset: 0; }
   .hero-v4 .hero-food-image { object-position: center 30%; }
   .hero-v4 .hero-photo::after {

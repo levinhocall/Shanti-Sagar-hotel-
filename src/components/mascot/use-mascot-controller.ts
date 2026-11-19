@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { useMotionValue } from 'motion/react';
 import type { MascotExpression } from './mascot-expressions';
 
-const SCROLL_END_MS = 640;
+const SCROLL_END_MS = 780;
 const SECTION_REPLAY_MS = 5400;
-const SURPRISE_MS = 1000;
+const SURPRISE_MS = 1400;
 const TAP_MS = 1000;
 
 type Reaction = 'curious' | 'happy' | 'approval';
-type Place = 'hero' | 'header' | 'dock';
 
 function readReaction(node: EventTarget | null): HTMLElement | null {
   return node instanceof Element ? node.closest<HTMLElement>('[data-mascot-reaction]') : null;
@@ -27,20 +26,16 @@ function sectionMood(id: string) {
 
 export function useMascotController() {
   const [expression, setExpression] = useState<MascotExpression>('idle');
-  const [place, setPlace] = useState<Place>('hero');
   const [visible, setVisible] = useState(() => !document.hidden);
   const gazeX = useMotionValue(0);
   const gazeY = useMotionValue(0);
   const tilt = useMotionValue(0);
 
   useEffect(() => {
-    const heroSlot = document.getElementById('hero-mascot-slot');
-    const desktop = matchMedia('(min-width: 1000px)');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section'));
     const entries = new Set<HTMLElement>();
     const lastReaction = new Map<HTMLElement, number>();
-    let heroVisible = true;
     let section: HTMLElement | undefined;
     let sectionTimer = 0;
     let scrollTimer = 0;
@@ -64,16 +59,6 @@ export function useMascotController() {
       if (tapped) next = 'happy';
       setExpression(next);
     }
-
-    function updatePlace() {
-      setPlace(heroVisible ? 'hero' : desktop.matches ? 'dock' : 'header');
-    }
-
-    const heroObserver = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(([entry]) => {
-      heroVisible = entry.isIntersecting && entry.intersectionRatio > .22;
-      updatePlace();
-    }, { threshold: [.22, .4] });
-    if (heroSlot) heroObserver?.observe(heroSlot);
 
     const sectionsObserver = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(observed => {
       for (const entry of observed) {
@@ -190,7 +175,6 @@ export function useMascotController() {
       } else publish();
     }
 
-    desktop.addEventListener('change', updatePlace);
     reduced.addEventListener('change', centerGaze);
     document.addEventListener('visibilitychange', onVisibility);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -201,9 +185,7 @@ export function useMascotController() {
     document.addEventListener('focusout', onFocus);
     document.addEventListener('click', onClick);
     return () => {
-      heroObserver?.disconnect();
       sectionsObserver?.disconnect();
-      desktop.removeEventListener('change', updatePlace);
       reduced.removeEventListener('change', centerGaze);
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('scroll', onScroll);
@@ -220,5 +202,5 @@ export function useMascotController() {
     };
   }, [gazeX, gazeY, tilt]);
 
-  return { expression, place, visible, gazeX, gazeY, tilt };
+  return { expression, visible, gazeX, gazeY, tilt };
 }
